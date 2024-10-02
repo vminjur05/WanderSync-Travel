@@ -21,4 +21,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-}
+} //comment because i didnt properly pull code last time ( ･w･)つ━☆・*。
