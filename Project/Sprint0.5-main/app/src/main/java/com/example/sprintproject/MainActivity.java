@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        Button quitButton = findViewById(R.id.btnQuit);
+        Button quitButton = findViewById(R.id.btnQuit); //button
         quitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
