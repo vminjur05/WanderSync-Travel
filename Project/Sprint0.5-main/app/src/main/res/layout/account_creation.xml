@@ -8,19 +8,6 @@
     tools:context=".MainActivity">
 
     <!-- Header Text -->
-
-    <!-- Username Label -->
-
-    <!-- Username EditText -->
-
-    <!-- Password Label -->
-
-    <!-- Password EditText -->
-
-    <!-- Register Button -->
-
-    <!-- Login Button -->
-
     <TextView
         android:id="@+id/welcomeText"
         android:layout_width="wrap_content"
@@ -32,5 +19,27 @@
         android:textStyle="bold"
         tools:layout_editor_absoluteX="107dp"
         tools:layout_editor_absoluteY="158dp" />
+
+    <!-- Username Label -->
+    <TextView
+        android:id="@+id/usernameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Username:"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Username EditText -->
+
+    <!-- Password Label -->
+
+    <!-- Password EditText -->
+
+    <!-- Register Button -->
+
+    <!-- Login Button -->
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
