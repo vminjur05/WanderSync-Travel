@@ -5,23 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"> //hi
 
     <!-- Header Text -->
-
-    <!-- Username Label -->
-
-    <!-- Username EditText -->
-
-    <!-- Password Label -->
-
-    <!-- Password EditText -->
-
-    <!-- Register Button -->
-
-    <!-- Login Button -->
-
-    <TextView
+    <TextViews
         android:id="@+id/welcomeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,5 +19,38 @@
         android:textStyle="bold"
         tools:layout_editor_absoluteX="107dp"
         tools:layout_editor_absoluteY="158dp" />
+
+    <!-- Username Label -->
+    <TextView
+        android:id="@+id/usernameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Username:"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Username EditText -->
+    <EditText
+        android:id="@+id/etUsername"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter your username"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@id/usernameLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8"
+        android:layout_marginTop="8dp" />
+
+    <!-- Password Label -->
+
+    <!-- Password EditText -->
+
+    <!-- Register Button -->
+
+    <!-- Login Button -->
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
