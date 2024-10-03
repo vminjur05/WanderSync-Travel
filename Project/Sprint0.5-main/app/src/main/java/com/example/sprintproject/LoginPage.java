@@ -13,15 +13,15 @@ public class LoginPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_page);
 
-        /**
+
         Button loginButton = findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Add your login logic here
+                Intent intent = new Intent(LoginPage.this, DiningEstablishments.class);
+                startActivity(intent);
             }
         });
-        **/
 
         Button createAccountButton = findViewById(R.id.btn_createacc);
         createAccountButton.setOnClickListener(new View.OnClickListener() {
