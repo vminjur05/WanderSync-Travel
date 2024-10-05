@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:title="Logistics"
+        android:icon="@drawable/logistics_icon"
+        android:id="@+id/logisticsicon"
+        />
+    <item
+        android:title="Destination"
+        android:icon="@drawable/destination_icon"
+        android:id="@+id/destinationicon"
+        />
+    <item
+        android:title="Dining Establishments"
+        android:icon="@drawable/dining_establishments_icon"
+        android:id="@+id/dining_establishmentsicon"
+        />
+    <item
+        android:title="Accommodations"
+        android:icon="@drawable/accomodations_icon"
+        android:id="@+id/accommodationsicon"
+        />
+    <item
+        android:title="Transportation"
+        android:icon="@drawable/transportation_icon"
+        android:id="@+id/transportationicon"
+        />
+    <item
+        android:title="Travel Community"
+        android:icon="@drawable/community_icon"
+        android:id="@+id/travel_communityicon"
+        />
+</menu>
