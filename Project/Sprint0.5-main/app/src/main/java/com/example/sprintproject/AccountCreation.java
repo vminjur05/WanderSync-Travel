@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sprintproject.R;
@@ -17,10 +18,12 @@ public class AccountCreation extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passwordEditText;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_creation);
+
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -43,6 +46,7 @@ public class AccountCreation extends AppCompatActivity {
             if (TextUtils.isEmpty(email)) {
                 Toast.makeText(AccountCreation.this, "Please enter email", Toast.LENGTH_SHORT).show();
                 return;
+
             }
 
             if (TextUtils.isEmpty(password)) {
@@ -63,7 +67,8 @@ public class AccountCreation extends AppCompatActivity {
                             // Registration failed - Show error message
                             Toast.makeText(AccountCreation.this, "Registration Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
-                    });
+              });
         });
+
     }
 }
