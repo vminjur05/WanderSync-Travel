@@ -76,7 +76,7 @@ public class LoginPage extends AppCompatActivity {
                             Toast.makeText(LoginPage.this, "Login Successful", Toast.LENGTH_SHORT).show();
 
                             // Placeholder for next screen (e.g., homepage or dashboard)
-                            startActivity(new Intent(LoginPage.this, DiningEstablishments.class));
+                            startActivity(new Intent(LoginPage.this, SecondActivity.class));
 
                         } else {
                             // Login failed - Show error message

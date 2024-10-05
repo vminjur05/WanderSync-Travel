@@ -79,7 +79,7 @@ public class AccountCreation extends AppCompatActivity {
                             Toast.makeText(AccountCreation.this, "Registration Successful", Toast.LENGTH_SHORT).show();
 
                             // Placeholder for next screen (To be added later)
-                            startActivity(new Intent(AccountCreation.this, DiningEstablishments.class));
+                            startActivity(new Intent(AccountCreation.this, SecondActivity.class));
                         } else {
                             // Registration failed - Show error message
                             Toast.makeText(AccountCreation.this, "Registration Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
