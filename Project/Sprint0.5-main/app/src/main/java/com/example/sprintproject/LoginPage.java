@@ -5,11 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import android.widget.EditText;
-import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginPage extends AppCompatActivity {
@@ -23,7 +18,7 @@ public class LoginPage extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginPage.this, DiningEstablishments.class);
+                Intent intent = new Intent(LoginPage.this, SecondActivity.class);
                 startActivity(intent);
             }
         });

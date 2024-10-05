@@ -7,7 +7,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,7 +58,7 @@ public class AccountCreation extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser user = auth.getCurrentUser();
                         Toast.makeText(AccountCreation.this, "Account Created", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(AccountCreation.this, DiningEstablishments.class);
+                        Intent intent = new Intent(AccountCreation.this, SecondActivity.class);
                         startActivity(intent);
                     } else {
                         Toast.makeText(AccountCreation.this, "Authentication failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
