@@ -3,6 +3,7 @@ package com.example.sprintproject;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -32,8 +33,15 @@ public class LoginPage extends AppCompatActivity {
         Button createAccountButton = findViewById(R.id.btn_createacc); // Matches XML ID for the "Create an Account" button
         Button exitButton = findViewById(R.id.exitButton); // Matches XML ID for the exit button
 
-        // Exit button logic
-        exitButton.setOnClickListener(v -> finish()); // Exits the activity when clicked
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
 
         // Create Account button logic
         createAccountButton.setOnClickListener(v -> {
@@ -66,7 +74,7 @@ public class LoginPage extends AppCompatActivity {
                             Toast.makeText(LoginPage.this, "Login Successful", Toast.LENGTH_SHORT).show();
 
                             // Placeholder for next screen (e.g., homepage or dashboard)
-                            // startActivity(new Intent(LoginPage.this, NextActivity.class));
+                            startActivity(new Intent(LoginPage.this, DiningEstablishments.class));
 
                         } else {
                             // Login failed - Show error message

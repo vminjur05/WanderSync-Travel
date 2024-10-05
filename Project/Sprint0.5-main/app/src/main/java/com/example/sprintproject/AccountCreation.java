@@ -1,5 +1,6 @@
 package com.example.sprintproject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -9,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.sprintproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class AccountCreation extends AppCompatActivity {
@@ -32,10 +32,27 @@ public class AccountCreation extends AppCompatActivity {
         emailEditText = findViewById(R.id.register_email);
         passwordEditText = findViewById(R.id.register_password);
         Button registerButton = findViewById(R.id.registerButton);
-        Button exitButton = findViewById(R.id.exitButton);
+        Button loginButton = findViewById(R.id.login_button);
+        Button exitButton = findViewById(R.id.exitButton); // Matches XML ID for the exit button
 
         // Exit button logic
-        exitButton.setOnClickListener(v -> finish());
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+        // Login button logic
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AccountCreation.this, LoginPage.class);
+                startActivity(intent);
+            }
+        });
 
         // Register button logic
         registerButton.setOnClickListener(v -> {
@@ -62,7 +79,7 @@ public class AccountCreation extends AppCompatActivity {
                             Toast.makeText(AccountCreation.this, "Registration Successful", Toast.LENGTH_SHORT).show();
 
                             // Placeholder for next screen (To be added later)
-                            // startActivity(new Intent(RegisterActivity.this, NextActivity.class));
+                            startActivity(new Intent(AccountCreation.this, DiningEstablishments.class));
                         } else {
                             // Registration failed - Show error message
                             Toast.makeText(AccountCreation.this, "Registration Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
