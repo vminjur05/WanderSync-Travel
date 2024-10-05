@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Log In"
-        android:textSize="24sp"
+        android:textSize="50sp"
         android:textStyle="bold" />
 
     <TextView
@@ -63,6 +63,18 @@
         android:layout_height="60dp"
         android:layout_marginTop="8dp"
         android:text="Create an Account"
+        android:backgroundTint="@android:color/darker_gray"
+        android:textColor="@android:color/white"
+        android:paddingHorizontal="20dp"
+        android:minHeight="48dp"/>
+
+    <!-- Exit Button -->
+    <Button
+        android:id="@+id/exitButton"
+        android:layout_width="350dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:text="Exit"
         android:backgroundTint="@android:color/darker_gray"
         android:textColor="@android:color/white"
         android:paddingHorizontal="20dp"

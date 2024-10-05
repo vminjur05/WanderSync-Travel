@@ -2,6 +2,7 @@ package com.example.sprintproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,39 +11,41 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class AccountCreation extends AppCompatActivity {
 
-    private FirebaseAuth auth;
-    private EditText emailEditText, passwordEditText;
+    private FirebaseAuth mAuth; // Firebase Authentication instance
+    private EditText emailEditText;
+    private EditText passwordEditText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_creation);
 
-        auth = FirebaseAuth.getInstance();  // Initialize Firebase Auth
 
-        emailEditText = findViewById(R.id.etUsername);
-        passwordEditText = findViewById(R.id.etPassword);
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
 
-        Button registerButton = findViewById(R.id.btnRegister);
-        registerButton.setOnClickListener(new View.OnClickListener() {
+        // Find UI elements
+        emailEditText = findViewById(R.id.register_email);
+        passwordEditText = findViewById(R.id.register_password);
+        Button registerButton = findViewById(R.id.registerButton);
+        Button loginButton = findViewById(R.id.login_button);
+        Button exitButton = findViewById(R.id.exitButton); // Matches XML ID for the exit button
+
+        // Exit button logic
+        exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = emailEditText.getText().toString().trim();
-                String password = passwordEditText.getText().toString().trim();
-
-                if (!email.isEmpty() && !password.isEmpty()) {
-                    createAccount(email, password);
-                } else {
-                    Toast.makeText(AccountCreation.this, "Email or Password cannot be empty", Toast.LENGTH_SHORT).show();
-                }
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             }
         });
-
-        Button loginButton = findViewById(R.id.btnLogin);
+        // Login button logic
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,19 +53,39 @@ public class AccountCreation extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
 
-    private void createAccount(String email, String password) {
-        auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = auth.getCurrentUser();
-                        Toast.makeText(AccountCreation.this, "Account Created", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(AccountCreation.this, SecondActivity.class);
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(AccountCreation.this, "Authentication failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+        // Register button logic
+        registerButton.setOnClickListener(v -> {
+            String email = emailEditText.getText().toString().trim();
+            String password = passwordEditText.getText().toString().trim();
+
+            // Validate input
+            if (TextUtils.isEmpty(email)) {
+                Toast.makeText(AccountCreation.this, "Please enter email", Toast.LENGTH_SHORT).show();
+                return;
+
+            }
+
+            if (TextUtils.isEmpty(password)) {
+                Toast.makeText(AccountCreation.this, "Please enter password", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Register the user using Firebase Authentication
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // Registration successful - Show success message
+                            Toast.makeText(AccountCreation.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+
+                            // Placeholder for next screen (To be added later)
+                            startActivity(new Intent(AccountCreation.this, DiningEstablishments.class));
+                        } else {
+                            // Registration failed - Show error message
+                            Toast.makeText(AccountCreation.this, "Registration Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+              });
+        });
+
     }
 }
