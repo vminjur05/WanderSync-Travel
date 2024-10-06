@@ -1,10 +1,9 @@
 package com.example.sprintproject;
 
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,12 +12,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.sprintproject.databinding.ActivitySecondaryBinding;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 public class SecondActivity extends AppCompatActivity {
 
-    ActivitySecondaryBinding binding;
+    private ActivitySecondaryBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("ActivityCheck", "onCreate called in SecondActivity");
@@ -79,7 +77,7 @@ public class SecondActivity extends AppCompatActivity {
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame_layout,fragment);
+        fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
     }
 }
