@@ -23,7 +23,7 @@
         </activity>
         <activity android:name=".LoginPage" />
         <activity android:name=".AccountCreation" />
-        <activity android:name=".Logistics" />
+        <activity android:name=".SecondActivity" />
     </application>
 
 </manifest>

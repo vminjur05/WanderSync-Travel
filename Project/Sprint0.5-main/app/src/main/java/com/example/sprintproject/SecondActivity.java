@@ -1,7 +1,11 @@
 package com.example.sprintproject;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -17,34 +21,58 @@ public class SecondActivity extends AppCompatActivity {
     ActivitySecondaryBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("ActivityCheck", "onCreate called in SecondActivity");
         super.onCreate(savedInstanceState);
         binding = ActivitySecondaryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         replaceFragment(new LogisticsFragment());
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        for (int i = 0; i < bottomNavigationView.getChildCount(); i++) {
-            View view = bottomNavigationView.getChildAt(i);
-            view.setPadding(0, 0, 0, 0);  // Removes default padding
-            view.requestLayout();  // Forces the view to re-layout
-        }
-
-        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-
-            if (item.getItemId() == R.id.logisticsicon) {
-                replaceFragment(new LogisticsFragment());
-            } else if (item.getItemId() == R.id.accommodationsicon) {
+        ImageButton accommodationsButton = findViewById(R.id.accommodationsicon);
+        accommodationsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 replaceFragment(new AccommodationsFragment());
-            } else if (item.getItemId() == R.id.travel_communityicon) {
+            }
+        });
+
+        ImageButton travelButton = findViewById(R.id.communityicon);
+        travelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 replaceFragment(new TravelCommunityFragment());
-            } else if (item.getItemId() == R.id.transportationicon) {
+            }
+        });
+
+        ImageButton transportationButton = findViewById(R.id.transportationicon);
+        transportationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 replaceFragment(new TransportationFragment());
-            } else if (item.getItemId() == R.id.destinationicon) {
+            }
+        });
+
+        ImageButton logisticsButton = findViewById(R.id.logisticsicon);
+        logisticsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 replaceFragment(new LogisticsFragment());
-            } else if (item.getItemId() == R.id.dining_establishmentsicon) {
+            }
+        });
+
+        ImageButton diningButton = findViewById(R.id.dining_establishmentsicon);
+        diningButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 replaceFragment(new DiningEstablishmentsFragment());
             }
-            return true;
+        });
+
+        ImageButton destinationButton = findViewById(R.id.destinationicon);
+        destinationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceFragment(new DestinationFragment());
+            }
         });
     }
 
@@ -53,7 +81,5 @@ public class SecondActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout,fragment);
         fragmentTransaction.commit();
-
-
     }
 }
