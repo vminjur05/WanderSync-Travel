@@ -44,13 +44,15 @@ public class AccountCreation extends AppCompatActivity {
 
             // Validate input
             if (TextUtils.isEmpty(email)) {
-                Toast.makeText(AccountCreation.this, "Please enter email", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AccountCreation.this,
+                        "Please enter email", Toast.LENGTH_SHORT).show();
                 return;
 
             }
 
             if (TextUtils.isEmpty(password)) {
-                Toast.makeText(AccountCreation.this, "Please enter password", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AccountCreation.this,
+                        "Please enter password", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -59,15 +61,17 @@ public class AccountCreation extends AppCompatActivity {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             // Registration successful - Show success message
-                            Toast.makeText(AccountCreation.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AccountCreation.this,
+                                    "Registration Successful", Toast.LENGTH_SHORT).show();
 
                             // Placeholder for next screen (To be added later)
                             // startActivity(new Intent(RegisterActivity.this, NextActivity.class));
                         } else {
                             // Registration failed - Show error message
-                            Toast.makeText(AccountCreation.this, "Registration Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AccountCreation.this, "Registration Failed: "
+                                    + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
-              });
+                    });
         });
 
     }
