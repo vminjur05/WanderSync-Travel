@@ -1,4 +1,4 @@
-package com.example.sprintproject;
+package com.example.sprintproject.views;
 
 import android.os.Bundle;
 
@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.sprintproject.R;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link DestinationFragment#newInstance} factory method to
+ * Use the {@link TravelCommunityFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DestinationFragment extends Fragment {
+public class TravelCommunityFragment extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -22,7 +24,7 @@ public class DestinationFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public DestinationFragment() {
+    public TravelCommunityFragment() {
         // Required empty public constructor
     }
 
@@ -32,10 +34,10 @@ public class DestinationFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment DestinationFragment.
+     * @return A new instance of fragment TravelCommunityFragment.
      */
-    public static DestinationFragment newInstance(String param1, String param2) {
-        DestinationFragment fragment = new DestinationFragment();
+    public static TravelCommunityFragment newInstance(String param1, String param2) {
+        TravelCommunityFragment fragment = new TravelCommunityFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -56,6 +58,6 @@ public class DestinationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_destination, container, false);
+        return inflater.inflate(R.layout.fragment_travel_community, container, false);
     }
 }
