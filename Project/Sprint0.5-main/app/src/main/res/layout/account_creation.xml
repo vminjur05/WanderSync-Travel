@@ -20,7 +20,7 @@
             android:gravity="center"
             android:text="@string/welcome_text"
             android:textColor="@android:color/black"
-            android:textSize="30sp"
+            android:textSize="45sp"
             android:textStyle="bold"
             tools:ignore="MissingConstraints" />
 
@@ -77,12 +77,22 @@
             android:backgroundTint="@android:color/darker_gray"
             tools:ignore="MissingConstraints" />
 
-        <!-- Exit Button -->
+        <!--Login button-->
+        <Button
+            android:id="@+id/login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@android:color/darker_gray"
+            tools:ignore="MissingConstraints" />
+
         <Button
             android:id="@+id/exitButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/exit"
+            android:text="Exit"
             android:textColor="@android:color/white"
             android:layout_marginTop="16dp"
             android:backgroundTint="@android:color/darker_gray"

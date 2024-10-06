@@ -8,10 +8,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-/*
-* unsure about this import statement, going to keep it for the time being,
-* needed it to resolve a conflict on Android Studio, as it was the suggested action
- */
+
 import com.example.sprintproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 
