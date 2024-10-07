@@ -6,4 +6,23 @@
     </style>
 
     <style name="Theme.SprintProject" parent="Base.Theme.SprintProject" />
+
+    <style name="BottomNavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
+        <!-- Set the size of the icons -->
+        <item name="itemIconSize">7dp</item>
+        <!-- Optional: Set text size if you want to adjust the label size as well -->
+        <item name="itemTextAppearanceActive">@style/BottomNavTextStyle</item>
+        <item name="itemTextAppearanceInactive">@style/BottomNavTextStyle</item>
+    </style>
+
+    <style name="BottomNavTextStyle">
+        <item name="android:textSize">7sp</item> <!-- Adjust this size as needed -->
+    </style>
+
+
+    <style name="ActionButtonStyle" parent="Widget.AppCompat.ActionButton">
+        <item name="android:minWidth">0dip</item>
+        <item name="android:paddingStart">4dip</item>
+        <item name="android:paddingEnd">4dip</item>
+    </style>
 </resources>
