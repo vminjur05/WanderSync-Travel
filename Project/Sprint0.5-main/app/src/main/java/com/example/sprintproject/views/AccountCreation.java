@@ -21,7 +21,7 @@ public class AccountCreation extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.account_creation);
+        setContentView(R.layout.account_creation); //creates the stuff on layout
 
 
         // Initialize Firebase Auth
