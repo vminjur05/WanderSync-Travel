@@ -34,5 +34,5 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
+    } //RIP
 } //comment because i didnt properly pull code last time ( ･w･)つ━☆・*。
