@@ -30,6 +30,5 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
+    } //one more comment .. . . . . . .. . ..   .. . .
 } //comment because i didnt properly pull code last time ( ･w･)つ━☆・*。
-//one more comment .. . . . . . .. . ..   .. . .
