@@ -1,3 +1,5 @@
+package project;
+
 import java.util.logging.Logger;
 
 public class ProjectManager extends TeamMember {
