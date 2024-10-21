@@ -1,8 +1,8 @@
 import java.util.logging.Logger;
 
-private static final Logger LOGGER = Logger.getLogger(ProjectManager.class.getName());
-
 public class ProjectManager extends TeamMember {
+    private static final Logger LOGGER = Logger.getLogger(ProjectManager.class.getName());
+    
     public ProjectManager(String name, String email) {
         super(name, email);
     }
