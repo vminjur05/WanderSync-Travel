@@ -43,6 +43,7 @@ dependencies {
 
     // Firebase Authentication dependency (no version needed, BOM will handle it)
     implementation("com.google.firebase:firebase-auth")
+    implementation 'com.google.firebase:firebase-database:21.0.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
