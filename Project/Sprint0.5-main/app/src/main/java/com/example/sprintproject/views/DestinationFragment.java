@@ -13,6 +13,11 @@ import android.widget.Toast;
 
 import com.example.sprintproject.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class DestinationFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
@@ -58,13 +63,14 @@ public class DestinationFragment extends Fragment {
 
         Button calculateTravelDuration = view.findViewById(R.id.calculate_travel_button);
         LinearLayout calculateTravelSection = view.findViewById(R.id.calculate_travel_section);
-        EditText startdate = view.findViewById(R.id.start_date);
-        EditText enddate = view.findViewById(R.id.end_date);
+        EditText startDate = view.findViewById(R.id.start_date);
+        EditText endDate = view.findViewById(R.id.end_date);
         EditText duration = view.findViewById(R.id.duration);
         Button calculateFinal = view.findViewById(R.id.Calculate_button);
 
         LinearLayout calculationsSection = view.findViewById(R.id.calculations_section);
         TextView results = view.findViewById(R.id.result_label);
+        Button resetButton = view.findViewById(R.id.reset_button);
 
         // Toggle the visibility of the travel log section
         showTextFieldButton.setOnClickListener(v -> {
@@ -88,11 +94,57 @@ public class DestinationFragment extends Fragment {
         });
 
         calculateFinal.setOnClickListener(v -> {
-            if (calculationsSection.getVisibility() == View.VISIBLE) {
-                calculationsSection.setVisibility(View.GONE);
-            } else {
+            String start = startDate.getText().toString();
+            String end = endDate.getText().toString();
+            String durationText = duration.getText().toString();
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+            try {
+                if (!start.isEmpty() && !end.isEmpty()) {
+                    // Calculate duration based on start and end dates
+                    Date startDateParsed = dateFormat.parse(start);
+                    Date endDateParsed = dateFormat.parse(end);
+                    long diffInMillis = endDateParsed.getTime() - startDateParsed.getTime();
+                    long days = diffInMillis / (1000 * 60 * 60 * 24);
+                    results.setText("Duration: " + days + " days");
+                    duration.setText(String.valueOf(days));
+                } else if (!start.isEmpty() && !durationText.isEmpty()) {
+                    // Calculate end date based on start date and duration
+                    Date startDateParsed = dateFormat.parse(start);
+                    int days = Integer.parseInt(durationText);
+                    long endInMillis = startDateParsed.getTime() + days * (1000 * 60 * 60 * 24);
+                    Date endDateCalculated = new Date(endInMillis);
+                    endDate.setText(dateFormat.format(endDateCalculated));
+                    results.setText("Duration: " + days + " days");
+                } else if (!end.isEmpty() && !durationText.isEmpty()) {
+                    // Calculate start date based on end date and duration
+                    Date endDateParsed = dateFormat.parse(end);
+                    int days = Integer.parseInt(durationText);
+                    long startInMillis = endDateParsed.getTime() - days * (1000 * 60 * 60 * 24);
+                    Date startDateCalculated = new Date(startInMillis);
+                    startDate.setText(dateFormat.format(startDateCalculated));
+                    results.setText("Duration: " + days + " days");
+                } else {
+                    Toast.makeText(getContext(), "Please provide at least two values", Toast.LENGTH_SHORT).show();
+                }
                 calculationsSection.setVisibility(View.VISIBLE);
+            } catch (ParseException e) {
+                Toast.makeText(getContext(), "Invalid date format. Please use yyyy-MM-dd.", Toast.LENGTH_SHORT).show();
+            } catch (NumberFormatException e) {
+                Toast.makeText(getContext(), "Invalid duration value.", Toast.LENGTH_SHORT).show();
             }
+        });
+
+        resetButton.setOnClickListener(v -> {
+            // Clear the input fields
+            startDate.setText("");
+            endDate.setText("");
+            duration.setText("");
+
+            // Clear the results text
+            results.setText("Result");
+
         });
 
         // Handle the "Cancel" button click

@@ -88,7 +88,7 @@
             android:id="@+id/start_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Start Date"
+            android:hint="Start Date (yyyy-MM-dd)"
             android:padding="10dp"
             android:layout_marginBottom="8dp" />
 
@@ -96,7 +96,7 @@
             android:id="@+id/end_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="End Date"
+            android:hint="End Date (yyyy-MM-dd)"
             android:padding="10dp"
             android:layout_marginBottom="8dp" />
 
@@ -104,7 +104,7 @@
             android:id="@+id/duration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Duration"
+            android:hint="Duration (dd)"
             android:padding="10dp"
             android:layout_marginBottom="16dp" />
 
@@ -112,6 +112,8 @@
             android:id="@+id/Calculate_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
             android:text="Calculate"
             android:layout_marginEnd="16dp" />
 
@@ -119,7 +121,7 @@
             android:id="@+id/calculations_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:gravity="center"
             android:layout_marginTop="8dp"
             android:visibility="gone">
 
@@ -130,6 +132,13 @@
                 android:text="Result"
                 android:textSize="50sp"
                 android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/reset_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reset"
+                android:layout_marginEnd="16dp" />
 
         </LinearLayout>
     </LinearLayout>
