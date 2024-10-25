@@ -1,3 +1,5 @@
+package project;
+
 public interface ITask {
     void updateStatus(String status);
     void setPriority(int priority);

@@ -1,3 +1,5 @@
+package project;
+
 public interface ITeamMember {
     String getName();
     String getEmail();

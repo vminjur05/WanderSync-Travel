@@ -1,3 +1,5 @@
+package project;
+
 public class TeamMember implements ITeamMember {
     private String name;
     private String email;

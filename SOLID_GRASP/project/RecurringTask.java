@@ -1,3 +1,5 @@
+package project;
+
 public class RecurringTask extends Task {
     private String recurrencePattern;
 
