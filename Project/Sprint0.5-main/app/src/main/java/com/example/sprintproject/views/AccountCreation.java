@@ -1,7 +1,9 @@
 package com.example.sprintproject.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -31,10 +33,20 @@ public class AccountCreation extends AppCompatActivity {
         emailEditText = findViewById(R.id.register_email);
         passwordEditText = findViewById(R.id.register_password);
         Button registerButton = findViewById(R.id.registerButton);
+        Button loginButton = findViewById(R.id.login_button);
         Button exitButton = findViewById(R.id.exitButton);
 
         // Exit button logic
         exitButton.setOnClickListener(v -> finish());
+
+        // Login button logic
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AccountCreation.this, LoginPage.class);
+                startActivity(intent);
+            }
+        });
 
         // Register button logic
         registerButton.setOnClickListener(v -> {
