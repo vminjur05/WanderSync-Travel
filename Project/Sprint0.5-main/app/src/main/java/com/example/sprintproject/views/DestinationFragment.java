@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sprintproject.R;
@@ -55,6 +56,16 @@ public class DestinationFragment extends Fragment {
         Button cancelButton = view.findViewById(R.id.cancel_button);
         Button submitButton = view.findViewById(R.id.submit_button);
 
+        Button calculateTravelDuration = view.findViewById(R.id.calculate_travel_button);
+        LinearLayout calculateTravelSection = view.findViewById(R.id.calculate_travel_section);
+        EditText startdate = view.findViewById(R.id.start_date);
+        EditText enddate = view.findViewById(R.id.end_date);
+        EditText duration = view.findViewById(R.id.duration);
+        Button calculateFinal = view.findViewById(R.id.Calculate_button);
+
+        LinearLayout calculationsSection = view.findViewById(R.id.calculations_section);
+        TextView results = view.findViewById(R.id.result_label);
+
         // Toggle the visibility of the travel log section
         showTextFieldButton.setOnClickListener(v -> {
             if (travelLogSection.getVisibility() == View.VISIBLE) {
@@ -63,6 +74,24 @@ public class DestinationFragment extends Fragment {
             } else {
                 travelLogSection.setVisibility(View.VISIBLE);
                 showTextFieldButton.setText("Hide Travel Log");
+            }
+        });
+
+        calculateTravelDuration.setOnClickListener(v -> {
+            if (calculateTravelSection.getVisibility() == View.VISIBLE) {
+                calculateTravelSection.setVisibility(View.GONE);
+                calculateTravelDuration.setText("Calculate Travel Duration");
+            } else {
+                calculateTravelSection.setVisibility(View.VISIBLE);
+                calculateTravelDuration.setText("Hide Calculations");
+            }
+        });
+
+        calculateFinal.setOnClickListener(v -> {
+            if (calculationsSection.getVisibility() == View.VISIBLE) {
+                calculationsSection.setVisibility(View.GONE);
+            } else {
+                calculationsSection.setVisibility(View.VISIBLE);
             }
         });
 

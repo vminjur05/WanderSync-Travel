@@ -67,4 +67,71 @@
                 android:text="Submit" />
         </LinearLayout>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/calculate_travel_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calculate Travel Duration"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp" />
+
+    <LinearLayout
+        android:id="@+id/calculate_travel_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/start_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Start Date"
+            android:padding="10dp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/end_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="End Date"
+            android:padding="10dp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/duration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Duration"
+            android:padding="10dp"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/Calculate_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Calculate"
+            android:layout_marginEnd="16dp" />
+
+        <LinearLayout
+            android:id="@+id/calculations_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/result_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Result"
+                android:textSize="50sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </LinearLayout>
+
 </LinearLayout>
