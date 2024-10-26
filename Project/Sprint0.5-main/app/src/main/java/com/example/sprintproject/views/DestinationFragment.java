@@ -74,6 +74,8 @@ public class DestinationFragment extends Fragment {
                 endDate.getText().toString(),
                 duration.getText().toString()
         ));
+            // Clear the results text
+            results.setText("XX");
 
         resetButton.setOnClickListener(v -> viewModel.resetFields());
 
