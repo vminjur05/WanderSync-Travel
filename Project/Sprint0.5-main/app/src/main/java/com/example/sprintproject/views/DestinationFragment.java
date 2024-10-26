@@ -77,7 +77,17 @@ public class DestinationFragment extends Fragment {
             // Clear the results text
             results.setText("XX");
 
-        resetButton.setOnClickListener(v -> viewModel.resetFields());
+        resetButton.setOnClickListener(v -> {
+            // Trigger the ViewModel to reset the fields
+            viewModel.resetFields();
+
+            // Additionally, clear the EditText fields (optional, but ensures UI consistency)
+            startDate.setText("");
+            endDate.setText("");
+            duration.setText("");
+            travelLocation.setText("");  // Clear the travel location field if needed
+            results.setText("XX");  // Reset any result display
+        });
 
         cancelButton.setOnClickListener(v -> {
             travelLogSection.setVisibility(View.GONE);
