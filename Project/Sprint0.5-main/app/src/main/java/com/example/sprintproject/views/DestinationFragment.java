@@ -143,7 +143,7 @@ public class DestinationFragment extends Fragment {
             duration.setText("");
 
             // Clear the results text
-            results.setText("Result");
+            results.setText("XX");
 
         });
 

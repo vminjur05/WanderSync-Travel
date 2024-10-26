@@ -19,12 +19,10 @@ public class AccountCreation extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passwordEditText;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_creation); //creates the stuff on layout
-
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
