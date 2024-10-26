@@ -1,6 +1,7 @@
 package com.example.sprintproject.views;
 
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
@@ -11,18 +12,34 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.example.sprintproject.R;
 import com.example.sprintproject.viewmodels.DestinationViewModel;
 
 public class DestinationFragment extends Fragment {
 
     private DestinationViewModel viewModel;
+    DatabaseReference databaseReference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(DestinationViewModel.class);
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.setValue("travelLog").addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(getContext(), "Database created", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), "Database not created", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -69,13 +86,33 @@ public class DestinationFragment extends Fragment {
             calculateTravelDuration.setText(calculateTravelSection.getVisibility() == View.VISIBLE ? "Hide Calculations" : "Calculate Travel Duration");
         });
 
-        calculateFinal.setOnClickListener(v -> viewModel.calculateDuration(
-                startDate.getText().toString(),
-                endDate.getText().toString(),
-                duration.getText().toString()
-        ));
-            // Clear the results text
-            results.setText("XX");
+        calculateFinal.setOnClickListener(v -> {
+            // Calculate the duration using the ViewModel method
+            viewModel.calculateDuration(
+                    startDate.getText().toString(),
+                    endDate.getText().toString(),
+                    duration.getText().toString()
+            );
+
+            // Store the values in Firebase after calculating the duration
+            String start = startDate.getText().toString();
+            String end = endDate.getText().toString();
+            String durationText = duration.getText().toString();
+
+            // Create a unique key for each travel entry
+            DatabaseReference travelEntryRef = databaseReference.child("travelLog").push();
+
+            // Store travel details in Firebase
+            travelEntryRef.child("startDate").setValue(start);
+            travelEntryRef.child("endDate").setValue(end);
+            travelEntryRef.child("duration").setValue(durationText)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(getContext(), "Travel data saved successfully!", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getContext(), "Failed to save travel data.", Toast.LENGTH_SHORT).show();
+                    });
+        });
 
         resetButton.setOnClickListener(v -> {
             // Trigger the ViewModel to reset the fields
