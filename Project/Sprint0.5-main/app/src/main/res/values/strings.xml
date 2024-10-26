@@ -8,4 +8,6 @@
     <string name="password_hint">Enter your password</string>
     <string name="register">Register</string>
     <string name="exit">Exit</string>
+    <string name="textview_label">Logistics</string>
+
 </resources>
