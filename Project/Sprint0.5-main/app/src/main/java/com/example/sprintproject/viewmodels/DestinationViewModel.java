@@ -15,6 +15,8 @@ import java.util.Locale;
 public class DestinationViewModel extends AndroidViewModel {
     private final MutableLiveData<DestinationFragmentModel> travelLog = new MutableLiveData<>();
     private final MutableLiveData<String> duration = new MutableLiveData<>();
+    private final MutableLiveData<String> startDate = new MutableLiveData<>();
+    private final MutableLiveData<String> endDate = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
@@ -30,6 +32,14 @@ public class DestinationViewModel extends AndroidViewModel {
         return duration;
     }
 
+    public LiveData<String> getStartDate() {
+        return startDate;
+    }
+
+    public LiveData<String> getEndDate() {
+        return endDate;
+    }
+
     public LiveData<String> getErrorMessage() {
         return errorMessage;
     }
@@ -40,29 +50,40 @@ public class DestinationViewModel extends AndroidViewModel {
         } else {
             travelLog.setValue(new DestinationFragmentModel(location, estimatedStart, estimatedEnd));
             errorMessage.setValue("Travel logged: " + location);
+            startDate.setValue(estimatedStart);
+            endDate.setValue(estimatedEnd);
         }
     }
 
     public void calculateDuration(String start, String end, String durationText) {
         try {
             if (!start.isEmpty() && !end.isEmpty()) {
+                // Calculate duration based on start and end dates
                 Date startDateParsed = dateFormat.parse(start);
                 Date endDateParsed = dateFormat.parse(end);
                 long diffInMillis = endDateParsed.getTime() - startDateParsed.getTime();
                 long days = diffInMillis / (1000 * 60 * 60 * 24);
                 duration.setValue(String.valueOf(days));
+                startDate.setValue(start);
+                endDate.setValue(end);
             } else if (!start.isEmpty() && !durationText.isEmpty()) {
+                // Calculate end date based on start date and duration
                 Date startDateParsed = dateFormat.parse(start);
                 int days = Integer.parseInt(durationText);
                 long endInMillis = startDateParsed.getTime() + days * (1000 * 60 * 60 * 24);
                 Date endDateCalculated = new Date(endInMillis);
-                duration.setValue(dateFormat.format(endDateCalculated));
+                endDate.setValue(dateFormat.format(endDateCalculated));
+                startDate.setValue(start);
+                duration.setValue(durationText);
             } else if (!end.isEmpty() && !durationText.isEmpty()) {
+                // Calculate start date based on end date and duration
                 Date endDateParsed = dateFormat.parse(end);
                 int days = Integer.parseInt(durationText);
                 long startInMillis = endDateParsed.getTime() - days * (1000 * 60 * 60 * 24);
                 Date startDateCalculated = new Date(startInMillis);
-                duration.setValue(dateFormat.format(startDateCalculated));
+                startDate.setValue(dateFormat.format(startDateCalculated));
+                endDate.setValue(end);
+                duration.setValue(durationText);
             } else {
                 errorMessage.setValue("Please provide at least two values");
             }
@@ -72,6 +93,8 @@ public class DestinationViewModel extends AndroidViewModel {
     }
 
     public void resetFields() {
+        startDate.setValue("");
+        endDate.setValue("");
         duration.setValue("");
         errorMessage.setValue("Fields reset");
     }
