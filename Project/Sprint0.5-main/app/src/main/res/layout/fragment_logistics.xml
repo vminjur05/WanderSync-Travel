@@ -101,7 +101,7 @@
             android:layout_marginEnd="328dp"
             android:layout_marginBottom="48dp"
             android:contentDescription="Invite Members"
-            android:src="@drawable/accomodations_icon"
+            android:src="@drawable/add_user_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -113,7 +113,7 @@
             android:layout_alignParentBottom="true"
             android:layout_margin="16dp"
             android:contentDescription="Other Shit"
-            android:src="@drawable/destination_icon"
+            android:src="@drawable/trip_plan_icon"
             tools:layout_editor_absoluteX="25dp"
             tools:layout_editor_absoluteY="659dp"
             app:layout_constraintBottom_toBottomOf="parent"
