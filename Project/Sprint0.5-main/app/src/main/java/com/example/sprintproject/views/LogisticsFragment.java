@@ -1,14 +1,24 @@
 package com.example.sprintproject.views;
 
+
 import android.os.Bundle;
 
+
 import androidx.fragment.app.Fragment;
+
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.app.AlertDialog;
+import android.widget.EditText;
+import android.widget.Toast;
+
+
+
+
 
 
 import com.example.sprintproject.R;
@@ -20,9 +30,12 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.PieEntry;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,16 +44,23 @@ import java.util.List;
  */
 public class LogisticsFragment extends Fragment {
 
+
+
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+
+    private String userInputText = "";
     private String mParam1;
     private String mParam2;
+
 
     public LogisticsFragment() {
         // Required empty public constructor
     }
+
 
     /**
      * Use this factory method to create a new instance of
@@ -59,6 +79,7 @@ public class LogisticsFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,9 +87,7 @@ public class LogisticsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -76,16 +95,18 @@ public class LogisticsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_logistics, container, false);
     }
 
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         // Find views in the fragment's layout
-        Button button = view.findViewById(R.id.logistics_graph_button);
+        Button graphButton = view.findViewById(R.id.logistics_graph_button);
         //LinearLayout graphContainer = view.findViewById(R.id.graph_container);
         TextView title = view.findViewById(R.id.logistics_graph_title);
         // Set up button click listener
-        button.setOnClickListener(new View.OnClickListener() {
+        graphButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Show the graph container
@@ -94,7 +115,35 @@ public class LogisticsFragment extends Fragment {
                 //showGraph(graphContainer);
             }
         });
+        FloatingActionButton userInviteButton = view.findViewById(R.id.floating_invite_button);
+
+        userInviteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showInputDialog();
+            }
+        });
     }
 
+    private void showInputDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Enter Your Text");
+
+        final EditText input = new EditText(getContext());
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            userInputText = input.getText().toString();
+            Toast.makeText(getContext(), "Input stored: " + userInputText, Toast.LENGTH_SHORT).show();
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+
+
+
 }
+
+
 
