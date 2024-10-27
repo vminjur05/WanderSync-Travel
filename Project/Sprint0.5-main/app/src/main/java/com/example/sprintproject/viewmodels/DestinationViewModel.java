@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Calendar;
 
 public class DestinationViewModel extends AndroidViewModel {
     private final MutableLiveData<DestinationFragmentModel> travelLog = new MutableLiveData<>();
@@ -55,24 +56,83 @@ public class DestinationViewModel extends AndroidViewModel {
         }
     }
 
-    public long calculateDuration(String start, String end) {
-        long days = 0; // Default duration
+    public DurationResult calculateDuration(String start, String end, String duration) {
+        DurationResult result = new DurationResult();
 
         try {
             if (!start.isEmpty() && !end.isEmpty()) {
-                // Calculate duration based on start and end dates
+                // Case 1: Start and End dates are provided, calculate duration
                 Date startDateParsed = dateFormat.parse(start);
                 Date endDateParsed = dateFormat.parse(end);
                 long diffInMillis = endDateParsed.getTime() - startDateParsed.getTime();
-                days = diffInMillis / (1000 * 60 * 60 * 24);
-            } else {
-                errorMessage.setValue("Please provide both start and end dates");
+                long days = diffInMillis / (1000 * 60 * 60 * 24);
+
+                result.setStartDate(startDateParsed);
+                result.setEndDate(endDateParsed);
+                result.setDuration(days);
+
+            } else if (!start.isEmpty() && !duration.isEmpty()) {
+                // Case 2: Start date and duration are provided, calculate end date
+                Date startDateParsed = dateFormat.parse(start);
+                long days = Long.parseLong(duration);
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(startDateParsed);
+                calendar.add(Calendar.DATE, (int) days);
+
+                result.setStartDate(startDateParsed);
+                result.setEndDate(calendar.getTime());
+                result.setDuration(days);
+
+            } else if (!end.isEmpty() && !duration.isEmpty()) {
+                // Case 3: End date and duration are provided, calculate start date
+                Date endDateParsed = dateFormat.parse(end);
+                long days = Long.parseLong(duration);
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(endDateParsed);
+                calendar.add(Calendar.DATE, -(int) days);
+
+                result.setStartDate(calendar.getTime());
+                result.setEndDate(endDateParsed);
+                result.setDuration(days);
             }
+
         } catch (ParseException e) {
-            errorMessage.setValue("Invalid input. Please check the date format.");
+            System.out.println("Invalid input. Please check the date format.");
         }
 
-        return days; // Return calculated duration
+        return result; // Return startDate, endDate, and duration in a result object
+    }
+
+    public static class DurationResult {
+        private Date startDate;
+        private Date endDate;
+        private long duration;
+
+        public Date getStartDate() {
+            return startDate;
+        }
+
+        public void setStartDate(Date startDate) {
+            this.startDate = startDate;
+        }
+
+        public Date getEndDate() {
+            return endDate;
+        }
+
+        public void setEndDate(Date endDate) {
+            this.endDate = endDate;
+        }
+
+        public long getDuration() {
+            return duration;
+        }
+
+        public void setDuration(long duration) {
+            this.duration = duration;
+        }
     }
 
     public void resetFields() {
