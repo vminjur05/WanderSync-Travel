@@ -1,11 +1,8 @@
 package com.example.sprintproject.views;
 
-
 import android.os.Bundle;
 
-
 import androidx.fragment.app.Fragment;
-
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,21 +13,18 @@ import android.app.AlertDialog;
 import android.widget.EditText;
 import android.widget.Toast;
 
-
-
-
-
-
 import com.example.sprintproject.R;
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.core.content.ContextCompat;
 
 
 import java.util.ArrayList;
@@ -56,6 +50,8 @@ public class LogisticsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private PieChart pieChart;
+    private DatabaseReference databaseReference;
 
     public LogisticsFragment() {
         // Required empty public constructor
@@ -83,6 +79,7 @@ public class LogisticsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -92,7 +89,13 @@ public class LogisticsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_logistics, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_logistics, container, false);
+        databaseReference = FirebaseDatabase.getInstance().getReference("travelLog");
+
+        // Use view.findViewById to access the PieChart
+        pieChart = view.findViewById(R.id.logistics_graph);
+        return view;
     }
 
 
@@ -112,7 +115,7 @@ public class LogisticsFragment extends Fragment {
                 // Show the graph container
                 //graphContainer.setVisibility(View.VISIBLE);
                 title.setVisibility(View.VISIBLE);
-                //showGraph(graphContainer);
+                loadDataFromFirebase();
             }
         });
         FloatingActionButton userInviteButton = view.findViewById(R.id.floating_invite_button);
@@ -139,6 +142,58 @@ public class LogisticsFragment extends Fragment {
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
+    }
+
+    private void loadDataFromFirebase() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<PieEntry> entries = new ArrayList<>();
+
+                // Retrieve the main "allotted" duration if it's a separate key at the root
+                Integer allotted = dataSnapshot.child("duration").getValue(Integer.class);
+                if (allotted != null) {
+                    entries.add(new PieEntry(allotted, "Allotted Duration"));
+                }
+
+                // Loop through each child in the data snapshot
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Integer days = snapshot.child("duration").getValue(Integer.class);
+                    String label = snapshot.child("name").getValue(String.class); // Assuming each child has a "name" field
+
+                    if (days != null && label != null) {
+                        entries.add(new PieEntry(days, label));
+                    }
+                }
+
+                // Update the pie chart with the new data
+                showPieChart(entries);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle possible errors
+            }
+        });
+    }
+
+    private void showPieChart(List<PieEntry> entries) {
+        PieDataSet dataSet = new PieDataSet(entries, "Travel Log");
+
+        // Set colors by fetching from resources
+        dataSet.setColors(
+                ContextCompat.getColor(this.getContext(), R.color.red),
+                ContextCompat.getColor(this.getContext(), R.color.lime)
+        );
+
+        // Additional styling
+        dataSet.setSliceSpace(3f); // Optional: adds space between slices
+        dataSet.setValueTextColor(ContextCompat.getColor(this.getContext(), R.color.black)); // Text color
+        dataSet.setValueTextSize(12f);
+
+        PieData pieData = new PieData(dataSet);
+        pieChart.setData(pieData);
+        pieChart.invalidate(); // Refresh the chart
     }
 
 
