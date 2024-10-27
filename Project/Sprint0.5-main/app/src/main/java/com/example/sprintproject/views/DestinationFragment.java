@@ -20,6 +20,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.example.sprintproject.R;
 import com.example.sprintproject.viewmodels.DestinationViewModel;
+import com.example.sprintproject.viewmodels.DestinationViewModel.DurationResult;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class DestinationFragment extends Fragment {
 
@@ -121,16 +125,45 @@ public class DestinationFragment extends Fragment {
         calculateFinal.setOnClickListener(v -> {
             String start = startDate.getText().toString().trim();
             String end = endDate.getText().toString().trim();
+            String durationStr = duration.getText().toString().trim();
 
-            if (start.isEmpty() || end.isEmpty()) {
-                Toast.makeText(getContext(), "Please fill in both dates", Toast.LENGTH_SHORT).show();
+            DurationResult result = null;
+
+            if (!start.isEmpty() && !end.isEmpty() && durationStr.isEmpty() ||
+                !start.isEmpty() && !end.isEmpty() && !durationStr.isEmpty()) {
+                // Case 1: Start and End are provided; calculate duration (or if all are provided)
+                result = viewModel.calculateDuration(start, end, "");
+
+            } else if (start.isEmpty() && !end.isEmpty() && !durationStr.isEmpty()) {
+                // Case 2: End and Duration are provided; calculate start date
+                result = viewModel.calculateDuration("", end, durationStr);
+
+            } else if (!start.isEmpty() && end.isEmpty() && !durationStr.isEmpty()) {
+                // Case 3: Start and Duration are provided; calculate end date
+                result = viewModel.calculateDuration(start, "", durationStr);
+
+            } else {
+                // Invalid input: prompt user to fill exactly 2 fields
+                Toast.makeText(getContext(), "Please fill in at least 2 out of 3 fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            // Calculate the duration and display it
+
+            if (result.getDuration() <= 0) {
+                Toast.makeText(getContext(), "Start date should not be after the end date!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Calculate the duration and display it
-            long durationInDays = viewModel.calculateDuration(start, end);
-            duration.setText(String.valueOf(durationInDays));
-            results.setText("Duration: " + durationInDays + " days");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+            // Format startDate and endDate for display
+            String formattedStartDate = dateFormat.format(result.getStartDate());
+            String formattedEndDate = dateFormat.format(result.getEndDate());
+
+            startDate.setText(String.valueOf(formattedStartDate));
+            endDate.setText(String.valueOf(formattedEndDate));
+            duration.setText(String.valueOf(result.getDuration()));
+            results.setText("Duration: " + result.getDuration() + " days");
             calculationsSection.setVisibility(View.VISIBLE);
 
             // Save calculation result under travelLog in Firebase
@@ -138,9 +171,9 @@ public class DestinationFragment extends Fragment {
             String sanitizedEmail = userEmail.replace(".", ",");
             DatabaseReference destinationEntryRef = travelLogReference.child(sanitizedEmail).push();
 
-            destinationEntryRef.child("startDate").setValue(start);
-            destinationEntryRef.child("endDate").setValue(end);
-            destinationEntryRef.child("duration").setValue(String.valueOf(durationInDays))
+            destinationEntryRef.child("startDate").setValue(formattedStartDate);
+            destinationEntryRef.child("endDate").setValue(formattedEndDate);
+            destinationEntryRef.child("duration").setValue(String.valueOf(result.getDuration()))
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(getContext(), "Travel duration saved successfully!", Toast.LENGTH_SHORT).show();
                     })
