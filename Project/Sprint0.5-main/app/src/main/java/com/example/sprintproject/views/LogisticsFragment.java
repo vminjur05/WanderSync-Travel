@@ -46,7 +46,8 @@ public class LogisticsFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
 
-    private String userInputText = "";
+    private String userInputTextAddUser = "";
+    private String userInputTextAddNotes = "";
     private String mParam1;
     private String mParam2;
 
@@ -123,12 +124,21 @@ public class LogisticsFragment extends Fragment {
         userInviteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showInputDialog();
+                showInputDialogAddUser();
+            }
+        });
+
+        FloatingActionButton userAddNoteButton = view.findViewById(R.id.floating_notes_button);
+
+        userAddNoteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showInputDialogAddNotes();
             }
         });
     }
 
-    private void showInputDialog() {
+    private void showInputDialogAddUser() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Enter Your Text");
 
@@ -136,8 +146,24 @@ public class LogisticsFragment extends Fragment {
         builder.setView(input);
 
         builder.setPositiveButton("OK", (dialog, which) -> {
-            userInputText = input.getText().toString();
-            Toast.makeText(getContext(), "Input stored: " + userInputText, Toast.LENGTH_SHORT).show();
+            userInputTextAddUser = input.getText().toString();
+            Toast.makeText(getContext(), "Input stored: " + userInputTextAddUser, Toast.LENGTH_SHORT).show();
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+
+    private void showInputDialogAddNotes() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Enter Your Text");
+
+        final EditText input = new EditText(getContext());
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            userInputTextAddNotes = input.getText().toString();
+            Toast.makeText(getContext(), "Input stored: " + userInputTextAddNotes, Toast.LENGTH_SHORT).show();
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
@@ -199,6 +225,7 @@ public class LogisticsFragment extends Fragment {
 
 
 }
+
 
 
 
