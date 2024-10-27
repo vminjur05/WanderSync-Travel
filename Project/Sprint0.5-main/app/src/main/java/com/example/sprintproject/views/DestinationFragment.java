@@ -91,11 +91,12 @@ public class DestinationFragment extends Fragment {
             String end = endDate.getText().toString();
             String durationText = duration.getText().toString();
 
-            // Get current user ID
-            String userId = firebaseAuth.getCurrentUser().getUid();
+            // Get current user's email and sanitize it for Firebase
+            String userEmail = firebaseAuth.getCurrentUser().getEmail();
+            String sanitizedEmail = userEmail.replace(".", ","); // Replace dots with commas
 
-            // Create a unique key for each travel entry under the user
-            DatabaseReference travelEntryRef = databaseReference.child(userId).push(); // Push generates a new unique key
+            // Create a unique key for each travel entry under the user's email
+            DatabaseReference travelEntryRef = databaseReference.child(sanitizedEmail).push(); // Push generates a new unique key
 
             // Store travel details in Firebase
             travelEntryRef.child("startDate").setValue(start);
