@@ -55,41 +55,24 @@ public class DestinationViewModel extends AndroidViewModel {
         }
     }
 
-    public void calculateDuration(String start, String end, String durationText) {
+    public long calculateDuration(String start, String end) {
+        long days = 0; // Default duration
+
         try {
             if (!start.isEmpty() && !end.isEmpty()) {
                 // Calculate duration based on start and end dates
                 Date startDateParsed = dateFormat.parse(start);
                 Date endDateParsed = dateFormat.parse(end);
                 long diffInMillis = endDateParsed.getTime() - startDateParsed.getTime();
-                long days = diffInMillis / (1000 * 60 * 60 * 24);
-                duration.setValue(String.valueOf(days));
-                startDate.setValue(start);
-                endDate.setValue(end);
-            } else if (!start.isEmpty() && !durationText.isEmpty()) {
-                // Calculate end date based on start date and duration
-                Date startDateParsed = dateFormat.parse(start);
-                int days = Integer.parseInt(durationText);
-                long endInMillis = startDateParsed.getTime() + days * (1000 * 60 * 60 * 24);
-                Date endDateCalculated = new Date(endInMillis);
-                endDate.setValue(dateFormat.format(endDateCalculated));
-                startDate.setValue(start);
-                duration.setValue(durationText);
-            } else if (!end.isEmpty() && !durationText.isEmpty()) {
-                // Calculate start date based on end date and duration
-                Date endDateParsed = dateFormat.parse(end);
-                int days = Integer.parseInt(durationText);
-                long startInMillis = endDateParsed.getTime() - days * (1000 * 60 * 60 * 24);
-                Date startDateCalculated = new Date(startInMillis);
-                startDate.setValue(dateFormat.format(startDateCalculated));
-                endDate.setValue(end);
-                duration.setValue(durationText);
+                days = diffInMillis / (1000 * 60 * 60 * 24);
             } else {
-                errorMessage.setValue("Please provide at least two values");
+                errorMessage.setValue("Please provide both start and end dates");
             }
-        } catch (ParseException | NumberFormatException e) {
-            errorMessage.setValue("Invalid input. Please check the date format or duration.");
+        } catch (ParseException e) {
+            errorMessage.setValue("Invalid input. Please check the date format.");
         }
+
+        return days; // Return calculated duration
     }
 
     public void resetFields() {
