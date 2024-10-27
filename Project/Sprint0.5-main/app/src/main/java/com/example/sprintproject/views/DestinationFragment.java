@@ -22,24 +22,13 @@ import com.example.sprintproject.viewmodels.DestinationViewModel;
 public class DestinationFragment extends Fragment {
 
     private DestinationViewModel viewModel;
-    DatabaseReference databaseReference;
+    private DatabaseReference databaseReference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(DestinationViewModel.class);
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.setValue("travelLog").addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Toast.makeText(getContext(), "Database created", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(), "Database not created", Toast.LENGTH_SHORT).show();
-            }
-        });
+        databaseReference = FirebaseDatabase.getInstance().getReference("travelLog"); // Only reference the path
     }
 
     @Override
@@ -100,7 +89,7 @@ public class DestinationFragment extends Fragment {
             String durationText = duration.getText().toString();
 
             // Create a unique key for each travel entry
-            DatabaseReference travelEntryRef = databaseReference.child("travelLog").push();
+            DatabaseReference travelEntryRef = databaseReference.push(); // Push generates a new unique key
 
             // Store travel details in Firebase
             travelEntryRef.child("startDate").setValue(start);
