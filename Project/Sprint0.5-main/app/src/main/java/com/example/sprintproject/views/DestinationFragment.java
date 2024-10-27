@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.example.sprintproject.R;
@@ -59,6 +60,10 @@ public class DestinationFragment extends Fragment {
         Button resetButton = view.findViewById(R.id.reset_button);
         TextView results = view.findViewById(R.id.result_label);
         LinearLayout calculationsSection = view.findViewById(R.id.calculations_section);
+
+        // Recent Trips Layout
+        LinearLayout recentTripsLayout = view.findViewById(R.id.recent_trips_layout); // Layout for displaying recent trips
+        loadRecentTrips(recentTripsLayout); // Load recent trips when the fragment is created
 
         // Travel Log Section Toggle
         showTextFieldButton.setOnClickListener(v -> {
@@ -154,5 +159,39 @@ public class DestinationFragment extends Fragment {
         });
 
         return view;
+    }
+
+    // Method to load and display recent trips
+    private void loadRecentTrips(LinearLayout recentTripsLayout) {
+        String userEmail = firebaseAuth.getCurrentUser().getEmail();
+        String sanitizedEmail = userEmail.replace(".", ",");
+
+        destinationsReference.child(sanitizedEmail)
+                .orderByKey()
+                .limitToLast(5) // Fetch last 5 trips
+                .get()
+                .addOnSuccessListener(dataSnapshot -> {
+                    recentTripsLayout.removeAllViews(); // Clear any existing views
+                    if (dataSnapshot.exists()) {
+                        for (DataSnapshot tripSnapshot : dataSnapshot.getChildren()) {
+                            String location = tripSnapshot.child("location").getValue(String.class);
+                            String start = tripSnapshot.child("estimatedStart").getValue(String.class);
+                            String end = tripSnapshot.child("estimatedEnd").getValue(String.class);
+
+                            // Create TextView for each trip
+                            TextView tripView = new TextView(getContext());
+                            tripView.setText("Location: " + location + "\nStart: " + start + "\nEnd: " + end);
+                            tripView.setPadding(0, 10, 0, 10); // Optional styling
+                            recentTripsLayout.addView(tripView);
+                        }
+                    } else {
+                        TextView noTripsView = new TextView(getContext());
+                        noTripsView.setText("No recent trips found.");
+                        recentTripsLayout.addView(noTripsView);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to load recent trips.", Toast.LENGTH_SHORT).show();
+                });
     }
 }
