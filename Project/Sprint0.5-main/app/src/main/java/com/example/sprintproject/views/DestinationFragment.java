@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.example.sprintproject.R;
@@ -23,12 +24,14 @@ public class DestinationFragment extends Fragment {
 
     private DestinationViewModel viewModel;
     private DatabaseReference databaseReference;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(DestinationViewModel.class);
-        databaseReference = FirebaseDatabase.getInstance().getReference("travelLog"); // Only reference the path
+        databaseReference = FirebaseDatabase.getInstance().getReference("travelLog");
+        firebaseAuth = FirebaseAuth.getInstance(); // Initialize Firebase Auth
     }
 
     @Override
@@ -88,8 +91,11 @@ public class DestinationFragment extends Fragment {
             String end = endDate.getText().toString();
             String durationText = duration.getText().toString();
 
-            // Create a unique key for each travel entry
-            DatabaseReference travelEntryRef = databaseReference.push(); // Push generates a new unique key
+            // Get current user ID
+            String userId = firebaseAuth.getCurrentUser().getUid();
+
+            // Create a unique key for each travel entry under the user
+            DatabaseReference travelEntryRef = databaseReference.child(userId).push(); // Push generates a new unique key
 
             // Store travel details in Firebase
             travelEntryRef.child("startDate").setValue(start);
