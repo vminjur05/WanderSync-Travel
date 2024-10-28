@@ -9,14 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.app.AlertDialog;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.sprintproject.R;
+import com.example.sprintproject.model.FirebaseDatabaseHelper;
+import com.example.sprintproject.model.LogisticsFragmentModel;
+import com.example.sprintproject.viewmodels.DestinationViewModel;
+import com.example.sprintproject.viewmodels.LogisticsViewModel;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -25,6 +29,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,7 +39,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.core.content.ContextCompat;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
-
+import java.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +55,11 @@ public class LogisticsFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private static LogisticsFragmentModel instance;
+    private LogisticsViewModel viewModel;
+    private DatabaseReference destinationsReference;
+    private DatabaseReference travelLogReference;
+    private FirebaseAuth firebaseAuth;
 
     private String userInputTextAddUser = "";
     private String userInputTextAddNotes = "";
@@ -58,9 +67,17 @@ public class LogisticsFragment extends Fragment {
     private BarChart barChart;
     private DatabaseReference databaseReference;
 
-    public LogisticsFragment() {
-        // Required empty public constructor
+    // Private constructor to prevent instantiation
+    public LogisticsFragment() {}
+
+    // Thread-safe method to get the single instance of DestinationFragment
+    public static synchronized LogisticsFragmentModel getInstance() {
+        if (instance == null) {
+            instance = new LogisticsFragmentModel();
+        }
+        return instance;
     }
+
 
 
     /**
@@ -84,6 +101,11 @@ public class LogisticsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        viewModel = LogisticsViewModel.getInstance(requireActivity().getApplication());
+        // Initialize Firebase references using singleton FirebaseDatabaseHelper
+        destinationsReference = FirebaseDatabaseHelper.getInstance().getDestinationsReference();
+        travelLogReference = FirebaseDatabaseHelper.getInstance().getTravelLogReference();
+        firebaseAuth = FirebaseAuth.getInstance();
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -184,14 +206,16 @@ public class LogisticsFragment extends Fragment {
     }
 
     private void loadDataFromFirebase() {
-        LoginPage user = new LoginPage();
+        String userEmail = firebaseAuth.getCurrentUser().getEmail();
+        String sanitizedEmail = userEmail.replace(".", ",");
+
         databaseReference = FirebaseDatabase.getInstance().getReference("travelLog")
-                .child(user.getEmail().replace(".", ","));
+                .child(sanitizedEmail);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<BarEntry> durationEntries = new ArrayList<>();
-                List<BarEntry> endDateEntries = new ArrayList<>();
+                List<BarEntry> allottedEntries = new ArrayList<>();
                 List<String> labels = new ArrayList<>();
                 int index = 0;
 
@@ -199,26 +223,40 @@ public class LogisticsFragment extends Fragment {
                     String durationStr = tripSnapshot.child("duration").getValue(String.class);
                     String endDateStr = tripSnapshot.child("endDate").getValue(String.class);
                     String startDate = tripSnapshot.child("startDate").getValue(String.class);
-
+                    //System.out.println(durationStr + endDateStr + startDate);
                     if (durationStr != null && !durationStr.isEmpty()) {
                         try {
                             // Parse duration as float for BarEntry
                             float duration = Float.parseFloat(durationStr);
                             durationEntries.add(new BarEntry(index, duration));
 
-                            // Parse endDate as a numeric value (use 0 if not available)
-                            float endDateValue = (endDateStr != null && !endDateStr.isEmpty()) ? Float.parseFloat(endDateStr) : 0;
-                            endDateEntries.add(new BarEntry(index, endDateValue));
+                            LogisticsViewModel.DurationResultLogistics allottedBringer = viewModel.calculateDurationLogistics(startDate, endDateStr);
+                            float allotted = allottedBringer.getDuration();
+                            if (allotted == -1234) {
+                                allottedEntries.add(new BarEntry(index, duration));
+                            } else {
+                                allottedEntries.add(new BarEntry(index, allotted));
+                            }
 
                             // Use startDate as label
-                            labels.add(startDate != null ? startDate : "Unknown Date");
+                            labels.add(startDate + " through " + endDateStr);
                             index++;
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
                         }
                     }
                 }
-                displayDataInChart(durationEntries, endDateEntries, labels);
+                BarEntry lastDuration = durationEntries.get(durationEntries.size() - 1);
+                BarEntry lastAlloted = allottedEntries.get(allottedEntries.size() - 1);
+                String lastLabel = labels.get(labels.size() - 1);
+                allottedEntries.clear();
+                allottedEntries.add(lastAlloted);
+                durationEntries.clear();
+                durationEntries.add(lastDuration);
+                labels.clear();
+                labels.add(lastLabel);
+
+                displayDataInChart(durationEntries, allottedEntries, labels);
             }
 
             @Override
@@ -228,12 +266,44 @@ public class LogisticsFragment extends Fragment {
         });
     }
 
+    private void loadRecentTrips(LinearLayout recentTripsLayout) {
+        String userEmail = firebaseAuth.getCurrentUser().getEmail();
+        String sanitizedEmail = userEmail.replace(".", ",");
+
+        destinationsReference.child(sanitizedEmail)
+                .orderByKey()
+                .limitToLast(5)
+                .get()
+                .addOnSuccessListener(dataSnapshot -> {
+                    recentTripsLayout.removeAllViews();
+                    if (dataSnapshot.exists()) {
+                        for (DataSnapshot tripSnapshot : dataSnapshot.getChildren()) {
+                            String location = tripSnapshot.child("location").getValue(String.class);
+                            String start = tripSnapshot.child("estimatedStart").getValue(String.class);
+                            String end = tripSnapshot.child("estimatedEnd").getValue(String.class);
+
+                            TextView tripView = new TextView(getContext());
+                            tripView.setText("Location: " + location + "\nStart: " + start + "\nEnd: " + end);
+                            tripView.setPadding(0, 10, 0, 10);
+                            recentTripsLayout.addView(tripView);
+                        }
+                    } else {
+                        TextView noTripsView = new TextView(getContext());
+                        noTripsView.setText("No recent trips found.");
+                        recentTripsLayout.addView(noTripsView);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to load recent trips.", Toast.LENGTH_SHORT).show();
+                });
+    }
+
 
     private void displayDataInChart(List<BarEntry> durationEntries, List<BarEntry> endDateEntries, List<String> labels) {
-        BarDataSet durationDataSet = new BarDataSet(durationEntries, "Duration");
+        BarDataSet durationDataSet = new BarDataSet(durationEntries, "Planned Days");
         durationDataSet.setColor(ColorTemplate.MATERIAL_COLORS[0]);
 
-        BarDataSet endDateDataSet = new BarDataSet(endDateEntries, "End Date");
+        BarDataSet endDateDataSet = new BarDataSet(endDateEntries, "Allotted Days");
         endDateDataSet.setColor(ColorTemplate.MATERIAL_COLORS[1]);
 
         BarData data = new BarData(durationDataSet, endDateDataSet);
