@@ -2,6 +2,7 @@ package com.example.sprintproject.views;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -14,10 +15,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.sprintproject.R;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,6 +32,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.core.content.ContextCompat;
+import com.github.mikephil.charting.utils.ColorTemplate;
+
 
 
 import java.util.ArrayList;
@@ -38,9 +47,6 @@ import java.util.List;
  */
 public class LogisticsFragment extends Fragment {
 
-
-
-
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -48,10 +54,8 @@ public class LogisticsFragment extends Fragment {
 
     private String userInputTextAddUser = "";
     private String userInputTextAddNotes = "";
-    private String mParam1;
-    private String mParam2;
 
-    private PieChart pieChart;
+    private BarChart barChart;
     private DatabaseReference databaseReference;
 
     public LogisticsFragment() {
@@ -80,11 +84,6 @@ public class LogisticsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -92,10 +91,8 @@ public class LogisticsFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_logistics, container, false);
-        databaseReference = FirebaseDatabase.getInstance().getReference("travelLog");
-
         // Use view.findViewById to access the PieChart
-        pieChart = view.findViewById(R.id.logistics_graph);
+        barChart = view.findViewById(R.id.logistics_graph);
         return view;
     }
 
@@ -116,6 +113,7 @@ public class LogisticsFragment extends Fragment {
                 // Show the graph container
                 //graphContainer.setVisibility(View.VISIBLE);
                 title.setVisibility(View.VISIBLE);
+                setupBarChart();
                 loadDataFromFirebase();
             }
         });
@@ -170,37 +168,92 @@ public class LogisticsFragment extends Fragment {
         builder.show();
     }
 
+    private void setupBarChart() {
+        barChart.getDescription().setEnabled(false);
+        barChart.setDrawGridBackground(false);
+        barChart.setPinchZoom(true);
+        barChart.setDrawBarShadow(false);
+        barChart.setDrawValueAboveBar(true);
+
+        // Set up the legend
+        Legend legend = barChart.getLegend();
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        legend.setOrientation(Legend.LegendOrientation.VERTICAL);
+        legend.setDrawInside(false);
+    }
+
     private void loadDataFromFirebase() {
+        LoginPage user = new LoginPage();
+        databaseReference = FirebaseDatabase.getInstance().getReference("travelLog")
+                .child(user.getEmail().replace(".", ","));
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List<PieEntry> entries = new ArrayList<>();
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<BarEntry> durationEntries = new ArrayList<>();
+                List<BarEntry> endDateEntries = new ArrayList<>();
+                List<String> labels = new ArrayList<>();
+                int index = 0;
 
-                // Retrieve the main "allotted" duration if it's a separate key at the root
-                Integer allotted = dataSnapshot.child("duration").getValue(Integer.class);
-                if (allotted != null) {
-                    entries.add(new PieEntry(allotted, "Allotted Duration"));
-                }
+                for (DataSnapshot tripSnapshot : snapshot.getChildren()) {
+                    String durationStr = tripSnapshot.child("duration").getValue(String.class);
+                    String endDateStr = tripSnapshot.child("endDate").getValue(String.class);
+                    String startDate = tripSnapshot.child("startDate").getValue(String.class);
 
-                // Loop through each child in the data snapshot
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Integer days = snapshot.child("duration").getValue(Integer.class);
-                    String label = snapshot.child("name").getValue(String.class); // Assuming each child has a "name" field
+                    if (durationStr != null && !durationStr.isEmpty()) {
+                        try {
+                            // Parse duration as float for BarEntry
+                            float duration = Float.parseFloat(durationStr);
+                            durationEntries.add(new BarEntry(index, duration));
 
-                    if (days != null && label != null) {
-                        entries.add(new PieEntry(days, label));
+                            // Parse endDate as a numeric value (use 0 if not available)
+                            float endDateValue = (endDateStr != null && !endDateStr.isEmpty()) ? Float.parseFloat(endDateStr) : 0;
+                            endDateEntries.add(new BarEntry(index, endDateValue));
+
+                            // Use startDate as label
+                            labels.add(startDate != null ? startDate : "Unknown Date");
+                            index++;
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-
-                // Update the pie chart with the new data
-                showPieChart(entries);
+                displayDataInChart(durationEntries, endDateEntries, labels);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Handle possible errors
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getContext(), "Error loading data", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+
+    private void displayDataInChart(List<BarEntry> durationEntries, List<BarEntry> endDateEntries, List<String> labels) {
+        BarDataSet durationDataSet = new BarDataSet(durationEntries, "Duration");
+        durationDataSet.setColor(ColorTemplate.MATERIAL_COLORS[0]);
+
+        BarDataSet endDateDataSet = new BarDataSet(endDateEntries, "End Date");
+        endDateDataSet.setColor(ColorTemplate.MATERIAL_COLORS[1]);
+
+        BarData data = new BarData(durationDataSet, endDateDataSet);
+        data.setValueTextSize(10f);
+        data.setBarWidth(0.4f); // Space between bars
+
+        barChart.setData(data);
+
+        // Format x-axis labels
+        barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
+        barChart.getXAxis().setGranularity(1f);
+        barChart.getXAxis().setGranularityEnabled(true);
+        barChart.getXAxis().setCenterAxisLabels(true);
+
+        // Group bars with a spacing of 0.1f between groups
+        barChart.getXAxis().setAxisMinimum(0);
+        barChart.getXAxis().setAxisMaximum(labels.size());
+        barChart.groupBars(0f, 0.2f, 0.05f); // Adjusts space between groups
+
+        barChart.invalidate(); // Refresh chart
     }
 
     private void showPieChart(List<PieEntry> entries) {
@@ -215,11 +268,11 @@ public class LogisticsFragment extends Fragment {
         // Additional styling
         dataSet.setSliceSpace(3f); // Optional: adds space between slices
         dataSet.setValueTextColor(ContextCompat.getColor(this.getContext(), R.color.black)); // Text color
-        dataSet.setValueTextSize(12f);
+        dataSet.setValueTextSize(16f);
 
         PieData pieData = new PieData(dataSet);
-        pieChart.setData(pieData);
-        pieChart.invalidate(); // Refresh the chart
+        //pieChart.setData(pieData);
+        //pieChart.invalidate(); // Refresh the chart
     }
 
 
