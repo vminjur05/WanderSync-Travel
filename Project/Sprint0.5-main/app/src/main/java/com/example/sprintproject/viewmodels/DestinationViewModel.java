@@ -28,7 +28,7 @@ public class DestinationViewModel extends AndroidViewModel {
 
     // Thread-safe method to get the single instance of DestinationViewModel
     public static synchronized DestinationViewModel getInstance(Application application) {
-        if (instance == null) {
+        if (instance == null) { // Singleton
             instance = new DestinationViewModel(application);
         }
         return instance;
