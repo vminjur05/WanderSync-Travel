@@ -40,7 +40,7 @@
             android:layout_marginEnd="159dp"
             android:layout_marginBottom="585dp"
             android:backgroundTint="@android:color/darker_gray"
-            android:text="Button"
+            android:text="Generate Graph"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +61,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.github.mikephil.charting.charts.PieChart
+        <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/logistics_graph"
             android:layout_width="331dp"
             android:layout_height="187dp"
@@ -74,7 +74,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" >
 
-        </com.github.mikephil.charting.charts.PieChart>
+        </com.github.mikephil.charting.charts.BarChart>
 
         <TextView
             android:id="@+id/textView4"
@@ -85,6 +85,7 @@
             android:layout_marginEnd="167dp"
             android:layout_marginBottom="317dp"
             android:text="Contributors"
+            android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -106,7 +107,7 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floating_other_button"
+            android:id="@+id/floating_notes_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -118,6 +119,43 @@
             tools:layout_editor_absoluteY="659dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
+
+        <Button
+            android:id="@+id/username1"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="44dp"
+            android:layout_marginTop="510dp"
+            android:backgroundTint="@android:color/darker_gray"
+            android:textSize="20dp"
+            android:padding="10dp"
+            android:text="username1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/username2"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="44dp"
+            android:layout_marginTop="650dp"
+            android:backgroundTint="@android:color/darker_gray"
+            android:textSize="20dp"
+            android:padding="10dp"            android:text="username3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/username3"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="44dp"
+            android:layout_marginTop="580dp"
+            android:backgroundTint="@android:color/darker_gray"
+            android:textSize="20dp"
+            android:padding="10dp"            android:text="username2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

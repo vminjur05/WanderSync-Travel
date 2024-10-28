@@ -19,6 +19,15 @@ public class LoginPage extends AppCompatActivity {
     private FirebaseAuth mAuth; // Firebase Authentication instance
     private EditText usernameEditText; // Renamed to match XML
     private EditText passwordEditText; // Renamed to match XML
+    private String email;
+
+    public LoginPage() {
+        email = "";
+    }
+
+    public String getEmail() {
+        return email;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +70,7 @@ public class LoginPage extends AppCompatActivity {
         // Login button logic
         loginButton.setOnClickListener(v -> {
             // Get user input
-            String email = usernameEditText.getText().toString().trim();
+            email = usernameEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
 
             // Validate input

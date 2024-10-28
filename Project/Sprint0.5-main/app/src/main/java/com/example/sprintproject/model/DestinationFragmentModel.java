@@ -5,12 +5,16 @@ public class DestinationFragmentModel {
     private String estimatedStart;
     private String estimatedEnd;
 
+    // Default constructor required for calls to DataSnapshot.getValue(DestinationFragmentModel.class)
+    public DestinationFragmentModel() {}
+
     public DestinationFragmentModel(String location, String estimatedStart, String estimatedEnd) {
         this.location = location;
         this.estimatedStart = estimatedStart;
         this.estimatedEnd = estimatedEnd;
     }
 
+    // Getters and setters
     public String getLocation() {
         return location;
     }
@@ -33,5 +37,10 @@ public class DestinationFragmentModel {
 
     public void setEstimatedEnd(String estimatedEnd) {
         this.estimatedEnd = estimatedEnd;
+    }
+
+    @Override
+    public String toString() {
+        return "Location: " + location + "\nStart: " + estimatedStart + "\nEnd: " + estimatedEnd;
     }
 }

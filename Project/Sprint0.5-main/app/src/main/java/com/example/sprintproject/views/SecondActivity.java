@@ -1,6 +1,5 @@
 package com.example.sprintproject.views;
 
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -70,7 +69,7 @@ public class SecondActivity extends AppCompatActivity {
         destinationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                replaceFragment(new DestinationFragment());
+                replaceFragment(DestinationFragment.getInstance());
             }
         });
     }

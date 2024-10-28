@@ -12,30 +12,49 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.example.sprintproject.R;
 import com.example.sprintproject.viewmodels.DestinationViewModel;
+import com.example.sprintproject.viewmodels.DestinationViewModel.DurationResult;
+import com.example.sprintproject.model.FirebaseDatabaseHelper;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class DestinationFragment extends Fragment {
 
+    private static DestinationFragment instance;
     private DestinationViewModel viewModel;
     private DatabaseReference destinationsReference;
     private DatabaseReference travelLogReference;
     private FirebaseAuth firebaseAuth;
 
+    // Private constructor to prevent instantiation
+    private DestinationFragment() {}
+
+    // Thread-safe method to get the single instance of DestinationFragment
+    public static synchronized DestinationFragment getInstance() {
+        if (instance == null) {
+            instance = new DestinationFragment();
+        }
+        return instance;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(DestinationViewModel.class);
-        destinationsReference = FirebaseDatabase.getInstance().getReference("destinations");
-        travelLogReference = FirebaseDatabase.getInstance().getReference("travelLog");
-        firebaseAuth = FirebaseAuth.getInstance(); // Initialize Firebase Auth
-    }
 
+        // Initialize ViewModel with singleton instance
+        viewModel = DestinationViewModel.getInstance(requireActivity().getApplication());
+
+        // Initialize Firebase references using singleton FirebaseDatabaseHelper
+        destinationsReference = FirebaseDatabaseHelper.getInstance().getDestinationsReference();
+        travelLogReference = FirebaseDatabaseHelper.getInstance().getTravelLogReference();
+
+        // Initialize Firebase Auth
+        firebaseAuth = FirebaseAuth.getInstance();
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_destination, container, false);
@@ -59,6 +78,10 @@ public class DestinationFragment extends Fragment {
         Button resetButton = view.findViewById(R.id.reset_button);
         TextView results = view.findViewById(R.id.result_label);
         LinearLayout calculationsSection = view.findViewById(R.id.calculations_section);
+
+        // Recent Trips Layout
+        LinearLayout recentTripsLayout = view.findViewById(R.id.recent_trips_layout); // Layout for displaying recent trips
+        loadRecentTrips(recentTripsLayout); // Load recent trips when the fragment is created
 
         // Travel Log Section Toggle
         showTextFieldButton.setOnClickListener(v -> {
@@ -116,16 +139,45 @@ public class DestinationFragment extends Fragment {
         calculateFinal.setOnClickListener(v -> {
             String start = startDate.getText().toString().trim();
             String end = endDate.getText().toString().trim();
+            String durationStr = duration.getText().toString().trim();
 
-            if (start.isEmpty() || end.isEmpty()) {
-                Toast.makeText(getContext(), "Please fill in both dates", Toast.LENGTH_SHORT).show();
+            DurationResult result = null;
+
+            if (!start.isEmpty() && !end.isEmpty() && durationStr.isEmpty() ||
+                    !start.isEmpty() && !end.isEmpty() && !durationStr.isEmpty()) {
+                // Case 1: Start and End are provided; calculate duration (or if all are provided)
+                result = viewModel.calculateDuration(start, end, "");
+
+            } else if (start.isEmpty() && !end.isEmpty() && !durationStr.isEmpty()) {
+                // Case 2: End and Duration are provided; calculate start date
+                result = viewModel.calculateDuration("", end, durationStr);
+
+            } else if (!start.isEmpty() && end.isEmpty() && !durationStr.isEmpty()) {
+                // Case 3: Start and Duration are provided; calculate end date
+                result = viewModel.calculateDuration(start, "", durationStr);
+
+            } else {
+                // Invalid input: prompt user to fill exactly 2 fields
+                Toast.makeText(getContext(), "Please fill in at least 2 out of 3 fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            // Calculate the duration and display it
+
+            if (result.getDuration() <= 0) {
+                Toast.makeText(getContext(), "Start date should not be after the end date!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Calculate the duration and display it
-            long durationInDays = viewModel.calculateDuration(start, end);
-            duration.setText(String.valueOf(durationInDays));
-            results.setText("Duration: " + durationInDays + " days");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+            // Format startDate and endDate for display
+            String formattedStartDate = dateFormat.format(result.getStartDate());
+            String formattedEndDate = dateFormat.format(result.getEndDate());
+
+            startDate.setText(String.valueOf(formattedStartDate));
+            endDate.setText(String.valueOf(formattedEndDate));
+            duration.setText(String.valueOf(result.getDuration()));
+            results.setText("Duration: " + result.getDuration() + " days");
             calculationsSection.setVisibility(View.VISIBLE);
 
             // Save calculation result under travelLog in Firebase
@@ -133,9 +185,9 @@ public class DestinationFragment extends Fragment {
             String sanitizedEmail = userEmail.replace(".", ",");
             DatabaseReference destinationEntryRef = travelLogReference.child(sanitizedEmail).push();
 
-            destinationEntryRef.child("startDate").setValue(start);
-            destinationEntryRef.child("endDate").setValue(end);
-            destinationEntryRef.child("duration").setValue(String.valueOf(durationInDays))
+            destinationEntryRef.child("startDate").setValue(formattedStartDate);
+            destinationEntryRef.child("endDate").setValue(formattedEndDate);
+            destinationEntryRef.child("duration").setValue(String.valueOf(result.getDuration()))
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(getContext(), "Travel duration saved successfully!", Toast.LENGTH_SHORT).show();
                     })
@@ -154,5 +206,38 @@ public class DestinationFragment extends Fragment {
         });
 
         return view;
+    }
+
+    // Method to load and display recent trips
+    private void loadRecentTrips(LinearLayout recentTripsLayout) {
+        String userEmail = firebaseAuth.getCurrentUser().getEmail();
+        String sanitizedEmail = userEmail.replace(".", ",");
+
+        destinationsReference.child(sanitizedEmail)
+                .orderByKey()
+                .limitToLast(5)
+                .get()
+                .addOnSuccessListener(dataSnapshot -> {
+                    recentTripsLayout.removeAllViews();
+                    if (dataSnapshot.exists()) {
+                        for (DataSnapshot tripSnapshot : dataSnapshot.getChildren()) {
+                            String location = tripSnapshot.child("location").getValue(String.class);
+                            String start = tripSnapshot.child("estimatedStart").getValue(String.class);
+                            String end = tripSnapshot.child("estimatedEnd").getValue(String.class);
+
+                            TextView tripView = new TextView(getContext());
+                            tripView.setText("Location: " + location + "\nStart: " + start + "\nEnd: " + end);
+                            tripView.setPadding(0, 10, 0, 10);
+                            recentTripsLayout.addView(tripView);
+                        }
+                    } else {
+                        TextView noTripsView = new TextView(getContext());
+                        noTripsView.setText("No recent trips found.");
+                        recentTripsLayout.addView(noTripsView);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to load recent trips.", Toast.LENGTH_SHORT).show();
+                });
     }
 }
