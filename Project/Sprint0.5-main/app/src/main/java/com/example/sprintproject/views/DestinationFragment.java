@@ -164,7 +164,7 @@ public class DestinationFragment extends Fragment {
             // Calculate the duration and display it
 
             if (result.getDuration() <= 0) {
-                Toast.makeText(getContext(), "Start date should not be after the end date!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Start date should not be after the end date!", Toast.LENGTH_SHORT).show(); //enforces the start date being before the end date
                 return;
             }
 
