@@ -61,7 +61,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.github.mikephil.charting.charts.PieChart
+        <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/logistics_graph"
             android:layout_width="331dp"
             android:layout_height="187dp"
@@ -74,7 +74,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" >
 
-        </com.github.mikephil.charting.charts.PieChart>
+        </com.github.mikephil.charting.charts.BarChart>
 
         <TextView
             android:id="@+id/textView4"
