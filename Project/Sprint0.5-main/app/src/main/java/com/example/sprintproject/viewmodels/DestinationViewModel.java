@@ -72,6 +72,9 @@ public class DestinationViewModel extends AndroidViewModel {
                 Date startDateParsed = dateFormat.parse(start);
                 Date endDateParsed = dateFormat.parse(end);
                 long diffInMillis = endDateParsed.getTime() - startDateParsed.getTime();
+                days = diffInMillis / (1000 * 60 * 60 * 24);
+            } else { // Case for missing input
+                errorMessage.setValue("Please provide both start and end dates");
                 long days = diffInMillis / (1000 * 60 * 60 * 24);
                 result.setStartDate(startDateParsed);
                 result.setEndDate(endDateParsed);
