@@ -237,7 +237,7 @@ public class DestinationFragment extends Fragment {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Failed to load recent trips.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Failed to load recent trips.", Toast.LENGTH_SHORT).show(); //case if trips is null
                 });
     }
 }
