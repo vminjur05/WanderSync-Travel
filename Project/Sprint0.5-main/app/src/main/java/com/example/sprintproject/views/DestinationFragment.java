@@ -12,35 +12,49 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.example.sprintproject.R;
 import com.example.sprintproject.viewmodels.DestinationViewModel;
 import com.example.sprintproject.viewmodels.DestinationViewModel.DurationResult;
-
+import com.example.sprintproject.model.FirebaseDatabaseHelper;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public class DestinationFragment extends Fragment {
 
+    private static DestinationFragment instance;
     private DestinationViewModel viewModel;
     private DatabaseReference destinationsReference;
     private DatabaseReference travelLogReference;
     private FirebaseAuth firebaseAuth;
 
+    // Private constructor to prevent instantiation
+    private DestinationFragment() {}
+
+    // Thread-safe method to get the single instance of DestinationFragment
+    public static synchronized DestinationFragment getInstance() {
+        if (instance == null) {
+            instance = new DestinationFragment();
+        }
+        return instance;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(DestinationViewModel.class);
-        destinationsReference = FirebaseDatabase.getInstance().getReference("destinations");
-        travelLogReference = FirebaseDatabase.getInstance().getReference("travelLog");
-        firebaseAuth = FirebaseAuth.getInstance(); // Initialize Firebase Auth
-    }
 
+        // Initialize ViewModel with singleton instance
+        viewModel = DestinationViewModel.getInstance(requireActivity().getApplication());
+
+        // Initialize Firebase references using singleton FirebaseDatabaseHelper
+        destinationsReference = FirebaseDatabaseHelper.getInstance().getDestinationsReference();
+        travelLogReference = FirebaseDatabaseHelper.getInstance().getTravelLogReference();
+
+        // Initialize Firebase Auth
+        firebaseAuth = FirebaseAuth.getInstance();
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_destination, container, false);
@@ -130,7 +144,7 @@ public class DestinationFragment extends Fragment {
             DurationResult result = null;
 
             if (!start.isEmpty() && !end.isEmpty() && durationStr.isEmpty() ||
-                !start.isEmpty() && !end.isEmpty() && !durationStr.isEmpty()) {
+                    !start.isEmpty() && !end.isEmpty() && !durationStr.isEmpty()) {
                 // Case 1: Start and End are provided; calculate duration (or if all are provided)
                 result = viewModel.calculateDuration(start, end, "");
 
@@ -201,20 +215,19 @@ public class DestinationFragment extends Fragment {
 
         destinationsReference.child(sanitizedEmail)
                 .orderByKey()
-                .limitToLast(5) // Fetch last 5 trips
+                .limitToLast(5)
                 .get()
                 .addOnSuccessListener(dataSnapshot -> {
-                    recentTripsLayout.removeAllViews(); // Clear any existing views
+                    recentTripsLayout.removeAllViews();
                     if (dataSnapshot.exists()) {
                         for (DataSnapshot tripSnapshot : dataSnapshot.getChildren()) {
                             String location = tripSnapshot.child("location").getValue(String.class);
                             String start = tripSnapshot.child("estimatedStart").getValue(String.class);
                             String end = tripSnapshot.child("estimatedEnd").getValue(String.class);
 
-                            // Create TextView for each trip
                             TextView tripView = new TextView(getContext());
                             tripView.setText("Location: " + location + "\nStart: " + start + "\nEnd: " + end);
-                            tripView.setPadding(0, 10, 0, 10); // Optional styling
+                            tripView.setPadding(0, 10, 0, 10);
                             recentTripsLayout.addView(tripView);
                         }
                     } else {
