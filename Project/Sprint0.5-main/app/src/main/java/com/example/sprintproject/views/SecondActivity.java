@@ -16,7 +16,8 @@ import com.example.sprintproject.databinding.ActivitySecondaryBinding;
 
 public class SecondActivity extends AppCompatActivity {
 
-    private ActivitySecondaryBinding binding; //getting error here, not sure why. app still works though.
+    private ActivitySecondaryBinding binding;
+    //getting error here, not sure why. app still works though.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("ActivityCheck", "onCreate called in SecondActivity");

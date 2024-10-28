@@ -18,7 +18,6 @@ import android.widget.Toast;
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.FirebaseDatabaseHelper;
 import com.example.sprintproject.model.LogisticsFragmentModel;
-import com.example.sprintproject.viewmodels.DestinationViewModel;
 import com.example.sprintproject.viewmodels.LogisticsViewModel;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
@@ -39,7 +38,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.core.content.ContextCompat;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
-import java.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +66,7 @@ public class LogisticsFragment extends Fragment {
     private DatabaseReference databaseReference;
 
     // Private constructor to prevent instantiation
-    public LogisticsFragment() {}
+    public LogisticsFragment() { }
 
     // Thread-safe method to get the single instance of DestinationFragment
     public static synchronized LogisticsFragmentModel getInstance() {
@@ -167,7 +165,8 @@ public class LogisticsFragment extends Fragment {
 
         builder.setPositiveButton("OK", (dialog, which) -> {
             userInputTextAddUser = input.getText().toString();
-            Toast.makeText(getContext(), "Input stored: " + userInputTextAddUser, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Input stored: " + userInputTextAddUser,
+                    Toast.LENGTH_SHORT).show();
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
@@ -183,7 +182,8 @@ public class LogisticsFragment extends Fragment {
 
         builder.setPositiveButton("OK", (dialog, which) -> {
             userInputTextAddNotes = input.getText().toString();
-            Toast.makeText(getContext(), "Input stored: " + userInputTextAddNotes, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Input stored: " + userInputTextAddNotes,
+                    Toast.LENGTH_SHORT).show();
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
@@ -230,7 +230,8 @@ public class LogisticsFragment extends Fragment {
                             float duration = Float.parseFloat(durationStr);
                             durationEntries.add(new BarEntry(index, duration));
 
-                            LogisticsViewModel.DurationResultLogistics allottedBringer = viewModel.calculateDurationLogistics(startDate, endDateStr);
+                            LogisticsViewModel.DurationResultLogistics allottedBringer
+                                    = viewModel.calculateDurationLogistics(startDate, endDateStr);
                             float allotted = allottedBringer.getDuration();
                             if (allotted == -1234) {
                                 allottedEntries.add(new BarEntry(index, duration));
@@ -279,11 +280,13 @@ public class LogisticsFragment extends Fragment {
                     if (dataSnapshot.exists()) {
                         for (DataSnapshot tripSnapshot : dataSnapshot.getChildren()) {
                             String location = tripSnapshot.child("location").getValue(String.class);
-                            String start = tripSnapshot.child("estimatedStart").getValue(String.class);
+                            String start = tripSnapshot.child("estimatedStart")
+                                    .getValue(String.class);
                             String end = tripSnapshot.child("estimatedEnd").getValue(String.class);
 
                             TextView tripView = new TextView(getContext());
-                            tripView.setText("Location: " + location + "\nStart: " + start + "\nEnd: " + end);
+                            tripView.setText("Location: " + location + "\nStart: "
+                                    + start + "\nEnd: " + end);
                             tripView.setPadding(0, 10, 0, 10);
                             recentTripsLayout.addView(tripView);
                         }
@@ -294,12 +297,14 @@ public class LogisticsFragment extends Fragment {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Failed to load recent trips.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Failed to load recent trips.",
+                            Toast.LENGTH_SHORT).show();
                 });
     }
 
 
-    private void displayDataInChart(List<BarEntry> durationEntries, List<BarEntry> endDateEntries, List<String> labels) {
+    private void displayDataInChart(List<BarEntry> durationEntries, List<BarEntry> endDateEntries,
+                                    List<String> labels) {
         BarDataSet durationDataSet = new BarDataSet(durationEntries, "Planned Days");
         durationDataSet.setColor(ColorTemplate.MATERIAL_COLORS[0]);
 
@@ -337,7 +342,8 @@ public class LogisticsFragment extends Fragment {
 
         // Additional styling
         dataSet.setSliceSpace(3f); // Optional: adds space between slices
-        dataSet.setValueTextColor(ContextCompat.getColor(this.getContext(), R.color.black)); // Text color
+        dataSet.setValueTextColor(ContextCompat.getColor(this.getContext(),
+                R.color.black)); // Text color
         dataSet.setValueTextSize(16f);
 
         PieData pieData = new PieData(dataSet);

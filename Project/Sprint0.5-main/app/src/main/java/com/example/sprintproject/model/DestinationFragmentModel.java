@@ -5,8 +5,9 @@ public class DestinationFragmentModel {
     private String estimatedStart;
     private String estimatedEnd;
 
-    // Default constructor required for calls to DataSnapshot.getValue(DestinationFragmentModel.class)
-    public DestinationFragmentModel() {}
+    // Default constructor required for calls to
+    // DataSnapshot.getValue(DestinationFragmentModel.class)
+    public DestinationFragmentModel() { }
 
     public DestinationFragmentModel(String location, String estimatedStart, String estimatedEnd) {
         this.location = location;

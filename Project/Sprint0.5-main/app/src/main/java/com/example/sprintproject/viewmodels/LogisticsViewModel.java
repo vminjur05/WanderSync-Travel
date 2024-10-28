@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel;
 import com.example.sprintproject.model.LogisticsFragmentModel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.time.LocalDate;
 import java.util.Locale;
@@ -21,7 +20,8 @@ public class LogisticsViewModel extends ViewModel {
     private final MutableLiveData<String> startDate = new MutableLiveData<>();
     private final MutableLiveData<String> endDate = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private final SimpleDateFormat dateFormat
+            = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     // Private constructor to prevent instantiation from outside
     private LogisticsViewModel(Application application) {
@@ -34,6 +34,17 @@ public class LogisticsViewModel extends ViewModel {
             instance = new LogisticsViewModel(application);
         }
         return instance;
+    }
+
+    public void logTravel(String location, String estimatedStart, String estimatedEnd) {
+        if (location.isEmpty() || estimatedStart.isEmpty() || estimatedEnd.isEmpty()) {
+            errorMessage.setValue("Please fill in all fields");
+        } else {
+            travelLog.setValue(new LogisticsFragmentModel(location, estimatedStart, estimatedEnd));
+            errorMessage.setValue("Travel logged: " + location);
+            startDate.setValue(estimatedStart);
+            endDate.setValue(estimatedEnd);
+        }
     }
 
     public DurationResultLogistics calculateDurationLogistics(String start, String end) {
@@ -117,16 +128,7 @@ public class LogisticsViewModel extends ViewModel {
         }
     }
 
-    public void logTravel(String location, String estimatedStart, String estimatedEnd) {
-        if (location.isEmpty() || estimatedStart.isEmpty() || estimatedEnd.isEmpty()) {
-            errorMessage.setValue("Please fill in all fields");
-        } else {
-            travelLog.setValue(new LogisticsFragmentModel(location, estimatedStart, estimatedEnd));
-            errorMessage.setValue("Travel logged: " + location);
-            startDate.setValue(estimatedStart);
-            endDate.setValue(estimatedEnd);
-        }
-    }
+
 
 
 
