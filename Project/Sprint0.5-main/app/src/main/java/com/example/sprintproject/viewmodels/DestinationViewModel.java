@@ -19,7 +19,8 @@ public class DestinationViewModel extends AndroidViewModel {
     private final MutableLiveData<String> startDate = new MutableLiveData<>();
     private final MutableLiveData<String> endDate = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd",
+            Locale.getDefault());
 
     // Private constructor to prevent instantiation from outside
     private DestinationViewModel(Application application) {
@@ -32,6 +33,13 @@ public class DestinationViewModel extends AndroidViewModel {
             instance = new DestinationViewModel(application);
         }
         return instance;
+    }
+
+    public void resetFields() {
+        startDate.setValue("");
+        endDate.setValue("");
+        duration.setValue("");
+        errorMessage.setValue("Fields reset");
     }
 
     public LiveData<DestinationFragmentModel> getTravelLog() {
@@ -58,7 +66,8 @@ public class DestinationViewModel extends AndroidViewModel {
         if (location.isEmpty() || estimatedStart.isEmpty() || estimatedEnd.isEmpty()) {
             errorMessage.setValue("Please fill in all fields");
         } else {
-            travelLog.setValue(new DestinationFragmentModel(location, estimatedStart, estimatedEnd));
+            travelLog.setValue(new DestinationFragmentModel(location,
+                    estimatedStart, estimatedEnd));
             errorMessage.setValue("Travel logged: " + location);
             startDate.setValue(estimatedStart);
             endDate.setValue(estimatedEnd);
@@ -131,10 +140,5 @@ public class DestinationViewModel extends AndroidViewModel {
         }
     }
 
-    public void resetFields() {
-        startDate.setValue("");
-        endDate.setValue("");
-        duration.setValue("");
-        errorMessage.setValue("Fields reset");
-    }
+
 }

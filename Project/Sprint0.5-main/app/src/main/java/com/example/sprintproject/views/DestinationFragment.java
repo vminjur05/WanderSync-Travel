@@ -1,9 +1,7 @@
 package com.example.sprintproject.views;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +29,7 @@ public class DestinationFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
 
     // Private constructor to prevent instantiation
-    private DestinationFragment() {}
+    private DestinationFragment() { }
 
     // Thread-safe method to get the single instance of DestinationFragment
     public static synchronized DestinationFragment getInstance() {
@@ -56,7 +54,8 @@ public class DestinationFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
     }
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_destination, container, false);
 
         // UI Elements for Travel Log
@@ -80,13 +79,16 @@ public class DestinationFragment extends Fragment {
         LinearLayout calculationsSection = view.findViewById(R.id.calculations_section);
 
         // Recent Trips Layout
-        LinearLayout recentTripsLayout = view.findViewById(R.id.recent_trips_layout); // Layout for displaying recent trips
+        LinearLayout recentTripsLayout = view.findViewById(R.id.recent_trips_layout);
+        // Layout for displaying recent trips
         loadRecentTrips(recentTripsLayout); // Load recent trips when the fragment is created
 
         // Travel Log Section Toggle
         showTextFieldButton.setOnClickListener(v -> {
-            travelLogSection.setVisibility(travelLogSection.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-            showTextFieldButton.setText(travelLogSection.getVisibility() == View.VISIBLE ? "Hide Travel Log" : "Log Travel");
+            travelLogSection.setVisibility(travelLogSection.getVisibility()
+                    == View.VISIBLE ? View.GONE : View.VISIBLE);
+            showTextFieldButton.setText(travelLogSection.getVisibility()
+                    == View.VISIBLE ? "Hide Travel Log" : "Log Travel");
         });
 
         // Submit Button for Travel Log
@@ -96,7 +98,8 @@ public class DestinationFragment extends Fragment {
             String end = estimatedEnd.getText().toString().trim();
 
             if (location.isEmpty() || start.isEmpty() || end.isEmpty()) {
-                Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Please fill in all fields",
+                        Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -110,13 +113,15 @@ public class DestinationFragment extends Fragment {
             travelEntryRef.child("estimatedStart").setValue(start);
             travelEntryRef.child("estimatedEnd").setValue(end)
                     .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(getContext(), "Travel log saved successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Travel log saved successfully!",
+                                Toast.LENGTH_SHORT).show();
                         travelLocation.setText("");
                         estimatedStart.setText("");
                         estimatedEnd.setText("");
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), "Failed to save travel log.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Failed to save travel log.",
+                                Toast.LENGTH_SHORT).show();
                     });
         });
 
@@ -131,8 +136,10 @@ public class DestinationFragment extends Fragment {
 
         // Calculate Travel Duration Section Toggle
         calculateTravelDuration.setOnClickListener(v -> {
-            calculateTravelSection.setVisibility(calculateTravelSection.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-            calculateTravelDuration.setText(calculateTravelSection.getVisibility() == View.VISIBLE ? "Hide Calculations" : "Calculate Travel Duration");
+            calculateTravelSection.setVisibility(calculateTravelSection.getVisibility()
+                    == View.VISIBLE ? View.GONE : View.VISIBLE);
+            calculateTravelDuration.setText(calculateTravelSection.getVisibility()
+                    == View.VISIBLE ? "Hide Calculations" : "Calculate Travel Duration");
         });
 
         // Calculate Final Duration Button
@@ -143,8 +150,8 @@ public class DestinationFragment extends Fragment {
 
             DurationResult result = null;
 
-            if (!start.isEmpty() && !end.isEmpty() && durationStr.isEmpty() ||
-                    !start.isEmpty() && !end.isEmpty() && !durationStr.isEmpty()) {
+            if (!start.isEmpty() && !end.isEmpty() && durationStr.isEmpty()
+                    || !start.isEmpty() && !end.isEmpty() && !durationStr.isEmpty()) {
                 // Case 1: Start and End are provided; calculate duration (or if all are provided)
                 result = viewModel.calculateDuration(start, end, "");
 
@@ -158,13 +165,16 @@ public class DestinationFragment extends Fragment {
 
             } else {
                 // Invalid input: prompt user to fill exactly 2 fields
-                Toast.makeText(getContext(), "Please fill in at least 2 out of 3 fields", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Please fill in at least 2 out of 3 fields",
+                        Toast.LENGTH_SHORT).show();
                 return;
             }
             // Calculate the duration and display it
 
             if (result.getDuration() <= 0) {
-                Toast.makeText(getContext(), "Start date should not be after the end date!", Toast.LENGTH_SHORT).show(); //enforces the start date being before the end date
+                Toast.makeText(getContext(), "Start date should not be after the end date!",
+                        Toast.LENGTH_SHORT).show();
+                //enforces the start date being before the end date
                 return;
             }
 
@@ -189,10 +199,12 @@ public class DestinationFragment extends Fragment {
             destinationEntryRef.child("endDate").setValue(formattedEndDate);
             destinationEntryRef.child("duration").setValue(String.valueOf(result.getDuration()))
                     .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(getContext(), "Travel duration saved successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Travel duration saved successfully!",
+                                Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), "Failed to save travel duration.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Failed to save travel duration.",
+                                Toast.LENGTH_SHORT).show();
                     });
         });
 
@@ -222,11 +234,14 @@ public class DestinationFragment extends Fragment {
                     if (dataSnapshot.exists()) {
                         for (DataSnapshot tripSnapshot : dataSnapshot.getChildren()) {
                             String location = tripSnapshot.child("location").getValue(String.class);
-                            String start = tripSnapshot.child("estimatedStart").getValue(String.class);
-                            String end = tripSnapshot.child("estimatedEnd").getValue(String.class);
+                            String start = tripSnapshot.child("estimatedStart")
+                                    .getValue(String.class);
+                            String end = tripSnapshot.child("estimatedEnd")
+                                    .getValue(String.class);
 
                             TextView tripView = new TextView(getContext());
-                            tripView.setText("Location: " + location + "\nStart: " + start + "\nEnd: " + end);
+                            tripView.setText("Location: " + location + "\nStart: "
+                                    + start + "\nEnd: " + end);
                             tripView.setPadding(0, 10, 0, 10);
                             recentTripsLayout.addView(tripView);
                         }
@@ -237,7 +252,8 @@ public class DestinationFragment extends Fragment {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Failed to load recent trips.", Toast.LENGTH_SHORT).show(); //case if trips is null
+                    Toast.makeText(getContext(), "Failed to load recent trips.",
+                            Toast.LENGTH_SHORT).show(); //case if trips is null
                 });
     }
 }
