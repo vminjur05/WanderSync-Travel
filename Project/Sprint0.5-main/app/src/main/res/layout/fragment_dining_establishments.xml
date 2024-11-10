@@ -1,58 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/diningFragmentLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".views.DiningEstablishmentsFragment">
 
-    <!-- Displaying existing data -->
-    <TextView
-        android:id="@+id/locationTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Location" />
+    <!-- RecyclerView to display the list of reservations -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/reservationsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical" />
 
-    <TextView
-        android:id="@+id/websiteTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Website" />
-
-    <TextView
-        android:id="@+id/reviewsTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Reviews" />
-
-    <TextView
-        android:id="@+id/reservationTimeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Reservation Time" />
+    <!-- Divider for visual separation -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginVertical="8dp" />
 
     <!-- Input form for adding new reservations -->
+    <TextView
+        android:id="@+id/addReservationTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add New Reservation"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
     <EditText
         android:id="@+id/inputLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Location" />
+        android:hint="Enter Location"
+        android:inputType="textPersonName"
+        android:drawableStart="@android:drawable/ic_menu_mapmode"
+        android:drawablePadding="8dp"
+        android:padding="8dp"
+        android:background="@android:drawable/edit_text"
+        android:layout_marginBottom="8dp" />
 
     <EditText
         android:id="@+id/inputWebsite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Website" />
+        android:hint="Enter Website"
+        android:inputType="textUri"
+        android:drawableStart="@android:drawable/ic_menu_info_details"
+        android:drawablePadding="8dp"
+        android:padding="8dp"
+        android:background="@android:drawable/edit_text"
+        android:layout_marginBottom="8dp" />
 
     <EditText
         android:id="@+id/inputReservationTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Reservation Time" />
+        android:hint="Enter Time (MM-dd HH:mm am/pm)"
+        android:inputType="text"
+        android:drawableStart="@android:drawable/ic_menu_recent_history"
+        android:drawablePadding="8dp"
+        android:padding="8dp"
+        android:background="@android:drawable/edit_text"
+        android:layout_marginBottom="8dp" />
 
     <Button
         android:id="@+id/submitReservationButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Reservation" />
+        android:text="Add Reservation"
+        android:backgroundTint="@color/purple"
+        android:textColor="@android:color/white"
+        android:padding="12dp"
+        android:textStyle="bold" />
+
 </LinearLayout>
