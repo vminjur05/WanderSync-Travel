@@ -12,7 +12,7 @@ public class DestinationFragmentModel {
     public DestinationFragmentModel(String location, String estimatedStart, String estimatedEnd) {
         this.location = location;
         this.estimatedStart = estimatedStart;
-        this.estimatedEnd = estimatedEnd;
+        this.estimatedEnd = estimatedEnd; //lawl
     }
 
     // Getters and setters
