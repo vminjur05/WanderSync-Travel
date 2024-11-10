@@ -137,7 +137,7 @@
             android:layout_weight="1"
             android:entries="@array/room_type_options"/>
     </LinearLayout>
-A
+
     <!-- Submit Button -->
     <Button
         android:id="@+id/submit_button"
