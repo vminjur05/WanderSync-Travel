@@ -25,4 +25,8 @@ public class FirebaseDatabaseHelper {
     public DatabaseReference getTravelLogReference() {
         return databaseReference.child("travelLog");
     }
+
+    public DatabaseReference getAccommodationsReference() {
+        return databaseReference.child("accommodations");
+    }
 }
