@@ -5,12 +5,14 @@
     android:layout_height="match_parent"
     tools:context=".views.AccommodationsFragment">
 
-    <TextView
+    <!-- RecyclerView to display the list of accommodations -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/accommodationsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Accommodations Screen" />
+        android:scrollbars="vertical" />
 
-    <!-- Floating Action Button -->
+    <!-- Floating Action Button for adding new accommodations -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_popup"
         android:layout_width="wrap_content"
