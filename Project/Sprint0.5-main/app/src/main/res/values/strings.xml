@@ -10,4 +10,17 @@
     <string name="exit">Exit</string>
     <string name="textview_label">Logistics</string>
 
+    <string-array name="rooms_options">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="room_type_options">
+        <item>King Suite</item>
+        <item>Queen Suite</item>
+    </string-array>
+
 </resources>
