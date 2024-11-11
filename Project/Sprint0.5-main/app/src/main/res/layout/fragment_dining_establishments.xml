@@ -8,6 +8,25 @@
     android:padding="16dp"
     tools:context=".views.DiningEstablishmentsFragment">
 
+    <!-- Top container for Sort button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:paddingBottom="8dp">
+
+        <Button
+            android:id="@+id/sortByDateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sort by Date"
+            android:backgroundTint="@color/purple"
+            android:textColor="@android:color/white"
+            android:padding="8dp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
     <!-- RecyclerView to display the list of reservations -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reservationsRecyclerView"

@@ -15,10 +15,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import android.widget.TextView;
 import android.widget.Button;
 import android.widget.EditText;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 import java.util.ArrayList;
@@ -32,8 +33,9 @@ public class DiningEstablishmentsFragment extends Fragment {
     private List<Reservation> reservationList = new ArrayList<>();
     private DatabaseReference reservationDatabase;
     private EditText inputLocation, inputWebsite, inputReservationTime;
-    private Button submitReservationButton;
+    private Button submitReservationButton, sortReservationsButton;
     private String sanitizedEmail;
+    private boolean sortOrderAscending = true; // Boolean to track sort order
 
     public DiningEstablishmentsFragment() {
         // Required empty public constructor
@@ -72,8 +74,9 @@ public class DiningEstablishmentsFragment extends Fragment {
         inputWebsite = view.findViewById(R.id.inputWebsite);
         inputReservationTime = view.findViewById(R.id.inputReservationTime);
         submitReservationButton = view.findViewById(R.id.submitReservationButton);
+        sortReservationsButton = view.findViewById(R.id.sortByDateButton);
 
-        // Load data from Firebase
+        // Load data from Firebase, sorted by earliest date by default
         loadDataFromDatabase();
 
         // Set OnClickListener for the add reservation button
@@ -81,6 +84,14 @@ public class DiningEstablishmentsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 addNewReservation();
+            }
+        });
+
+        // Set OnClickListener for the sort reservations button
+        sortReservationsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleSortOrder();
             }
         });
 
@@ -200,7 +211,8 @@ public class DiningEstablishmentsFragment extends Fragment {
                         reservationList.add(reservation);
                     }
                 }
-                reservationAdapter.notifyDataSetChanged();
+                // Sort by earliest date by default
+                sortReservationsByDateTime(true);
             }
 
             @Override
@@ -208,5 +220,29 @@ public class DiningEstablishmentsFragment extends Fragment {
                 Toast.makeText(getContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void toggleSortOrder() {
+        sortOrderAscending = !sortOrderAscending; // Toggle the sort order
+        sortReservationsByDateTime(sortOrderAscending);
+    }
+
+    private void sortReservationsByDateTime(boolean ascending) {
+        // Sort reservations by date and time
+        Collections.sort(reservationList, new Comparator<Reservation>() {
+            @Override
+            public int compare(Reservation r1, Reservation r2) {
+                try {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+                    Date date1 = dateFormat.parse(r1.getReservationTime());
+                    Date date2 = dateFormat.parse(r2.getReservationTime());
+                    return ascending ? date1.compareTo(date2) : date2.compareTo(date1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return 0;
+                }
+            }
+        });
+        reservationAdapter.notifyDataSetChanged();
     }
 }
