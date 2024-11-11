@@ -66,6 +66,12 @@ public class AccommodationAdapter extends RecyclerView.Adapter<AccommodationAdap
         return accommodations.size();
     }
 
+    public void updateList(List<Accommodation> newList) {
+        accommodations.clear();
+        accommodations.addAll(newList);
+        notifyDataSetChanged();
+    }
+
     public static class AccommodationViewHolder extends RecyclerView.ViewHolder {
         TextView locationTextView, checkInTextView, checkOutTextView, roomTypeTextView, numberOfRoomsTextView, statusTextView;
 

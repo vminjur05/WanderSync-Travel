@@ -1,5 +1,6 @@
 package com.example.sprintproject.views;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class AccommodationsFragment extends Fragment {
 
@@ -59,9 +61,53 @@ public class AccommodationsFragment extends Fragment {
         FloatingActionButton fabPopup = view.findViewById(R.id.fab_popup);
         fabPopup.setOnClickListener(v -> showPopupDialog());
 
+        // Get sort buttons
+        Button sortByCheckInButton = view.findViewById(R.id.sortByCheckInButton);
+        Button sortByCheckOutButton = view.findViewById(R.id.sortByCheckOutButton);
+        Button filterByDateButton = view.findViewById(R.id.filterByDateButton);
+
+        // Sort by Check-in Date
+        sortByCheckInButton.setOnClickListener(v -> sortAccommodationsByCheckInDate());
+
+        // Sort by Check-out Date
+        sortByCheckOutButton.setOnClickListener(v -> sortAccommodationsByCheckOutDate());
+
+        // Filter by Date
+        filterByDateButton.setOnClickListener(v -> showDateFilterDialog());
+
         loadAccommodations();
 
         return view;
+    }
+
+    private void sortAccommodationsByCheckInDate() {
+        // Sorting by Check-in Date
+        accommodationList.sort((a1, a2) -> {
+            try {
+                Date checkIn1 = dateFormat.parse(a1.getCheckInDate());
+                Date checkIn2 = dateFormat.parse(a2.getCheckInDate());
+                return checkIn1.compareTo(checkIn2);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return 0;
+            }
+        });
+        accommodationAdapter.notifyDataSetChanged();
+    }
+
+    private void sortAccommodationsByCheckOutDate() {
+        // Sorting by Check-out Date
+        accommodationList.sort((a1, a2) -> {
+            try {
+                Date checkOut1 = dateFormat.parse(a1.getCheckOutDate());
+                Date checkOut2 = dateFormat.parse(a2.getCheckOutDate());
+                return checkOut1.compareTo(checkOut2);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return 0;
+            }
+        });
+        accommodationAdapter.notifyDataSetChanged();
     }
 
     private void loadAccommodations() {
@@ -175,5 +221,55 @@ public class AccommodationsFragment extends Fragment {
         });
 
         dialog.show();
+    }
+    private void showDateFilterDialog() {
+        // Create Date Pickers for Start and End Dates
+        DatePickerDialog startDateDialog = new DatePickerDialog(getContext(), (view, year, month, dayOfMonth) -> {
+            String startDate = (month + 1) + "/" + dayOfMonth + "/" + year;
+            DatePickerDialog endDateDialog = new DatePickerDialog(getContext(), (view1, year1, month1, dayOfMonth1) -> {
+                String endDate = (month1 + 1) + "/" + dayOfMonth1 + "/" + year1;
+                filterAccommodationsByDateRange(startDate, endDate);
+            }, year, month, dayOfMonth);
+            endDateDialog.show();
+        }, 2024, 0, 1);
+
+        startDateDialog.show();
+    }
+    private void filterAccommodationsByDateRange(String startDate, String endDate) {
+        try {
+            // Use the same format as your database (MM-dd-yyyy)
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+
+            // Parse the start and end date from the dialog
+            Date start = dateFormat.parse(startDate);
+            Date end = dateFormat.parse(endDate);
+
+            List<Accommodation> filteredList = new ArrayList<>();
+
+            for (Accommodation accommodation : accommodationList) {
+                Date checkInDate = dateFormat.parse(accommodation.getCheckInDate());
+                Date checkOutDate = dateFormat.parse(accommodation.getCheckOutDate());
+
+                // Check if either the check-in date or check-out date falls within the selected range
+                if ((checkInDate.equals(start) || checkInDate.after(start)) &&
+                        (checkInDate.before(end) || checkInDate.equals(end)) ||
+                        (checkOutDate.equals(start) || checkOutDate.after(start)) &&
+                                (checkOutDate.before(end) || checkOutDate.equals(end))) {
+                    // Add to the filtered list if it matches the criteria
+                    filteredList.add(accommodation);
+                }
+            }
+
+            // Update the adapter with the filtered list
+            accommodationAdapter.updateList(filteredList);
+
+            // If no accommodations match, show a message
+            if (filteredList.isEmpty()) {
+                Toast.makeText(getContext(), "No accommodations found for the selected dates.", Toast.LENGTH_SHORT).show();
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }
