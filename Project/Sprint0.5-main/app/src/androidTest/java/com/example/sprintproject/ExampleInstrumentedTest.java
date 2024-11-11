@@ -8,7 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*; // lawl more lols
+import static org.junit.Assert.*; // lawl more lols and even more lawlzzz
 
 /**
  * Instrumented test, which will execute on an Android device.
