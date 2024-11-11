@@ -10,7 +10,7 @@
         android:id="@+id/accommodationsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:fastScrollEnabled="true" />
 
     <!-- Floating Action Button for adding new accommodations -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
