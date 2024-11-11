@@ -351,6 +351,8 @@ public class LogisticsFragment extends Fragment {
         //pieChart.invalidate(); // Refresh the chart
     }
 
+    //ADD INVITE FUNCTIONALITY
+
 
 
 }
