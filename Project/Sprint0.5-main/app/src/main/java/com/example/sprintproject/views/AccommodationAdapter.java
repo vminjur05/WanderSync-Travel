@@ -72,6 +72,10 @@ public class AccommodationAdapter extends RecyclerView.Adapter<AccommodationAdap
         notifyDataSetChanged();
     }
 
+    public void setAccommodations(List<Accommodation> accommodations) {
+        notifyDataSetChanged();
+    }
+
     public static class AccommodationViewHolder extends RecyclerView.ViewHolder {
         TextView locationTextView, checkInTextView, checkOutTextView, roomTypeTextView, numberOfRoomsTextView, statusTextView;
 
