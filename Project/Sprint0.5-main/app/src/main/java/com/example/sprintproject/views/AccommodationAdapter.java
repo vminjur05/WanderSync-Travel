@@ -1,5 +1,6 @@
 package com.example.sprintproject.views;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.Accommodation;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class AccommodationAdapter extends RecyclerView.Adapter<AccommodationAdapter.AccommodationViewHolder> {
 
@@ -32,7 +37,28 @@ public class AccommodationAdapter extends RecyclerView.Adapter<AccommodationAdap
         holder.checkInTextView.setText(accommodation.getCheckInDate());
         holder.checkOutTextView.setText(accommodation.getCheckOutDate());
         holder.roomTypeTextView.setText(accommodation.getRoomType());
-        holder.numberOfRoomsTextView.setText(accommodation.getNumberOfRooms()); // Set number of rooms
+        holder.numberOfRoomsTextView.setText(accommodation.getNumberOfRooms());
+
+        // Date format for parsing check-out date
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+        Date today = new Date();
+        try {
+            Date checkOutDate = sdf.parse(accommodation.getCheckOutDate());
+
+            if (checkOutDate != null && checkOutDate.before(today)) {
+                // Expired reservation
+                holder.statusTextView.setText("Expired");
+                holder.statusTextView.setTextColor(Color.RED);
+                holder.itemView.setBackgroundColor(Color.LTGRAY);
+            } else {
+                // Upcoming reservation
+                holder.statusTextView.setText("Upcoming");
+                holder.statusTextView.setTextColor(Color.GREEN);
+                holder.itemView.setBackgroundColor(Color.WHITE);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -41,7 +67,7 @@ public class AccommodationAdapter extends RecyclerView.Adapter<AccommodationAdap
     }
 
     public static class AccommodationViewHolder extends RecyclerView.ViewHolder {
-        TextView locationTextView, checkInTextView, checkOutTextView, roomTypeTextView, numberOfRoomsTextView;
+        TextView locationTextView, checkInTextView, checkOutTextView, roomTypeTextView, numberOfRoomsTextView, statusTextView;
 
         public AccommodationViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -49,7 +75,8 @@ public class AccommodationAdapter extends RecyclerView.Adapter<AccommodationAdap
             checkInTextView = itemView.findViewById(R.id.checkInTextView);
             checkOutTextView = itemView.findViewById(R.id.checkOutTextView);
             roomTypeTextView = itemView.findViewById(R.id.roomTypeTextView);
-            numberOfRoomsTextView = itemView.findViewById(R.id.numberOfRoomsTextView); // Initialize numberOfRoomsTextView
+            numberOfRoomsTextView = itemView.findViewById(R.id.numberOfRoomsTextView);
+            statusTextView = itemView.findViewById(R.id.statusTextView); // Initialize statusTextView
         }
     }
 }

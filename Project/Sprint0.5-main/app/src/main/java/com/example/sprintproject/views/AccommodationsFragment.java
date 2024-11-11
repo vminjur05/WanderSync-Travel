@@ -36,7 +36,7 @@ public class AccommodationsFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private List<Accommodation> accommodationList;
     private AccommodationAdapter accommodationAdapter;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Adjust format if needed
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy"); // Adjust format if needed
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
