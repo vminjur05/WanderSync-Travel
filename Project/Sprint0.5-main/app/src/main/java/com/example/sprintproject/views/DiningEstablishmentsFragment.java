@@ -200,7 +200,7 @@ public class DiningEstablishmentsFragment extends Fragment {
     }
 
     private void loadDataFromDatabase() {
-        reservationDatabase.child(sanitizedEmail).addValueEventListener(new ValueEventListener() {
+        reservationDatabase.child(sanitizedEmail).addValueEventListener(new ValueEventListener() { // better syntax
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) { // hi
                 reservationList.clear();
