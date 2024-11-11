@@ -96,6 +96,7 @@ public class AccommodationsFragment extends Fragment {
         accommodationAdapter.notifyDataSetChanged();
     }
 
+    //method
     private void sortAccommodationsByCheckOutDate() {
         // Sorting by Check-out Date
         accommodationList.sort((a1, a2) -> {
