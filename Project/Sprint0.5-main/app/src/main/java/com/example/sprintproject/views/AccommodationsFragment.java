@@ -80,6 +80,7 @@ public class AccommodationsFragment extends Fragment {
         return view;
     }
 
+    //method
     private void sortAccommodationsByCheckInDate() {
         // Sorting by Check-in Date
         accommodationList.sort((a1, a2) -> {
