@@ -5,10 +5,30 @@
     android:layout_height="match_parent"
     tools:context=".views.TravelCommunityFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Travel Community Screen" />
+        android:orientation="vertical">
+
+        <!-- RecyclerView to display the list of travel posts -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:clipToPadding="false" />
+
+        <!-- Button to create a new travel post -->
+        <Button
+            android:id="@+id/newPostButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="New Travel Post"
+            android:backgroundTint="@color/teal"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </FrameLayout>
