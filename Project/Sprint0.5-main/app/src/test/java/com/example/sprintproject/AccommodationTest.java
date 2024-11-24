@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-
+//proper labeling of imports
 import com.example.sprintproject.model.Accommodation;
 
 public class AccommodationTest {
