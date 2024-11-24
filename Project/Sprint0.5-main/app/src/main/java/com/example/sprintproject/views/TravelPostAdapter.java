@@ -47,6 +47,7 @@ public class TravelPostAdapter extends RecyclerView.Adapter<TravelPostAdapter.Tr
 
         public TravelPostViewHolder(@NonNull View itemView) {
             super(itemView);
+            // UI implementation through TextView
             destinationTextView = itemView.findViewById(R.id.destinationTextView);
             durationTextView = itemView.findViewById(R.id.durationTextView);
             notesTextView = itemView.findViewById(R.id.notesTextView);
