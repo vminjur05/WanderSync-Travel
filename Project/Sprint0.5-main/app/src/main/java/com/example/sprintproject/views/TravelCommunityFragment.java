@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.google.firebase.auth.FirebaseAuth;
+
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -61,7 +63,16 @@ public class TravelCommunityFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        databaseReference = FirebaseDatabase.getInstance().getReference("travel_posts");
+
+        // Assuming Firebase Authentication is being used, retrieve the user's email.
+        String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        if (userEmail != null) {
+            String encodedEmail = userEmail.replace(".", ","); // Replace '.' with ',' for Firebase keys
+            databaseReference = FirebaseDatabase.getInstance().getReference("users").child(encodedEmail).child("travel_posts");
+        } else {
+            // Handle the case where the user is not logged in (optional)
+            Toast.makeText(getContext(), "User not logged in!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
