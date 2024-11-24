@@ -35,4 +35,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     } //RIP
-} //comment because i didnt properly pull code last time ( ･w･)つ━☆・*。
+} //comment because i didnt properly pull code last time ( ･w･)つ━☆・*
+// im just adding more comments...
