@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.TravelPost;
 import com.example.sprintproject.views.TravelPostAdapter;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -64,16 +65,22 @@ public class TravelCommunityFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Assuming Firebase Authentication is being used, retrieve the user's email.
-        String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-        if (userEmail != null) {
-            String encodedEmail = userEmail.replace(".", ","); // Replace '.' with ',' for Firebase keys
-            databaseReference = FirebaseDatabase.getInstance().getReference("users").child(encodedEmail).child("travel_posts");
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String userEmail = currentUser.getEmail();
+            if (userEmail != null) {
+                String encodedEmail = userEmail.replace(".", ","); // Replace '.' with ',' for Firebase keys
+                // Set the database reference to "travel_posts/{encodedEmail}"
+                databaseReference = FirebaseDatabase.getInstance().getReference("travel_posts").child(encodedEmail);
+            } else {
+                Toast.makeText(getContext(), "Unable to retrieve email address.", Toast.LENGTH_SHORT).show();
+            }
         } else {
-            // Handle the case where the user is not logged in (optional)
             Toast.makeText(getContext(), "User not logged in!", Toast.LENGTH_SHORT).show();
+            // Optionally, redirect to the login screen
         }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
