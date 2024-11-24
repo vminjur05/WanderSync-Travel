@@ -6,7 +6,7 @@ public class TravelPost {
     public TravelPost() {
         // Default constructor required for Firebase
     }
-
+    // Constructor to initialize the TravelPost object
     public TravelPost(String id, String startDate, String endDate, String destination, String accommodations, String dining, String notes) {
         this.id = id;
         this.startDate = startDate;
