@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class TravelPostAdapter extends RecyclerView.Adapter<TravelPostAdapter.TravelPostViewHolder> {
 
     private final ArrayList<TravelPost> travelPosts;
-
+    // helps implement travel post into fragment
     public TravelPostAdapter(ArrayList<TravelPost> travelPosts) {
         this.travelPosts = travelPosts;
     }
