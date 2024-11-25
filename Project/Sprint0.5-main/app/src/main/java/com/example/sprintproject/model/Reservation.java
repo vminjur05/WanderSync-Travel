@@ -9,8 +9,15 @@ public class Reservation {
     private int rating; // Field for star rating
 
     // Private constructor to prevent instantiation
-    private Reservation() { }
+    // Empty constructor needed for Firebase
+    public Reservation() { }
 
+    public Reservation(String id, String location, String website, String reservationTime) {
+        this.id = id;
+        this.location = location;
+        this.website = website;
+        this.reservationTime = reservationTime;
+    }
     // Public static method to provide access to the single instance
     public static synchronized Reservation getInstance() {
         if (instance == null) {
