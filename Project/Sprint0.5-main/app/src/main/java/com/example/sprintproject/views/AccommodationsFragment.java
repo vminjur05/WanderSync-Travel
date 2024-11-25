@@ -12,11 +12,14 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.Accommodation;
 import com.example.sprintproject.model.FirebaseDatabaseHelper;
+import com.example.sprintproject.viewmodels.AccommodationViewModel;
 import com.example.sprintproject.views.AccommodationAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,7 +41,9 @@ public class AccommodationsFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private List<Accommodation> accommodationList;
     private AccommodationAdapter accommodationAdapter;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy"); // Adjust format if needed
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+    private AccommodationViewModel accommodationViewModel;
+// Adjust format if needed
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,6 +81,17 @@ public class AccommodationsFragment extends Fragment {
         filterByDateButton.setOnClickListener(v -> showDateFilterDialog());
 
         loadAccommodations();
+
+        accommodationViewModel = new ViewModelProvider(this).get(AccommodationViewModel.class);
+
+        // Observe LiveData from ViewModel
+        accommodationViewModel.getAccommodations().observe(getViewLifecycleOwner(), new Observer<List<Accommodation>>() {
+
+            public void onChanged(List<Accommodation> accommodations) {
+                // Update RecyclerView when data changes
+                accommodationAdapter.setAccommodations(accommodations);
+            }
+        });
 
         return view;
     }

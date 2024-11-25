@@ -26,6 +26,9 @@ public class TransportationFragment extends Fragment {
 
     public TransportationFragment() {
         // Required empty public constructor
+
+        //not needed
+        //not needed
     }
 
     /**
