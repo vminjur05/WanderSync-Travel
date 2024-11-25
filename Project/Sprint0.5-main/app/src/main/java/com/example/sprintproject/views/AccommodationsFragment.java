@@ -18,9 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.Accommodation;
-import com.example.sprintproject.model.FirebaseDatabaseHelper;
 import com.example.sprintproject.viewmodels.AccommodationViewModel;
-import com.example.sprintproject.views.AccommodationAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
@@ -43,7 +41,7 @@ public class AccommodationsFragment extends Fragment {
     private AccommodationAdapter accommodationAdapter;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
     private AccommodationViewModel accommodationViewModel;
-// Adjust format if needed
+    // Adjust format if needed
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +53,8 @@ public class AccommodationsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_accommodations, container, false);
 
         RecyclerView recyclerView = view.findViewById(R.id.accommodationsRecyclerView);
@@ -283,7 +282,8 @@ public class AccommodationsFragment extends Fragment {
 
             // If no accommodations match, show a message
             if (filteredList.isEmpty()) {
-                Toast.makeText(getContext(), "No accommodations found for the selected dates.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "No accommodations found for the selected dates.",
+                        Toast.LENGTH_SHORT).show();
             }
 
         } catch (ParseException e) {

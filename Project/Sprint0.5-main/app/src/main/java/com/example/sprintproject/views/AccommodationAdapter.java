@@ -15,7 +15,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class AccommodationAdapter extends RecyclerView.Adapter<AccommodationAdapter.AccommodationViewHolder> {
+public class AccommodationAdapter extends
+        RecyclerView.Adapter<AccommodationAdapter.AccommodationViewHolder> {
 
     private final List<Accommodation> accommodations;
 
@@ -25,8 +26,10 @@ public class AccommodationAdapter extends RecyclerView.Adapter<AccommodationAdap
 
     @NonNull
     @Override
-    public AccommodationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.accommodation_item, parent, false);
+    public AccommodationViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                      int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.accommodation_item, parent, false);
         return new AccommodationViewHolder(view);
     }
 
@@ -77,7 +80,12 @@ public class AccommodationAdapter extends RecyclerView.Adapter<AccommodationAdap
     }
 
     public static class AccommodationViewHolder extends RecyclerView.ViewHolder {
-        TextView locationTextView, checkInTextView, checkOutTextView, roomTypeTextView, numberOfRoomsTextView, statusTextView;
+        private TextView locationTextView;
+        private TextView checkInTextView;
+        private TextView checkOutTextView;
+        private TextView roomTypeTextView;
+        private TextView numberOfRoomsTextView;
+        private TextView statusTextView;
 
         public AccommodationViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -86,7 +94,8 @@ public class AccommodationAdapter extends RecyclerView.Adapter<AccommodationAdap
             checkOutTextView = itemView.findViewById(R.id.checkOutTextView);
             roomTypeTextView = itemView.findViewById(R.id.roomTypeTextView);
             numberOfRoomsTextView = itemView.findViewById(R.id.numberOfRoomsTextView);
-            statusTextView = itemView.findViewById(R.id.statusTextView); // Initialize statusTextView
+            statusTextView = itemView.findViewById(R
+                    .id.statusTextView); // Initialize statusTextView
         }
     }
 }
