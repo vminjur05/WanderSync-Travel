@@ -9,14 +9,14 @@
         android:id="@+id/startDateInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Start Date"
+        android:hint="Start Date (MM/DD/YYYY)"
         android:inputType="date" />
 
     <EditText
         android:id="@+id/endDateInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="End Date"
+        android:hint="End Date (MM/DD/YYYY)"
         android:inputType="date" />
 
     <EditText

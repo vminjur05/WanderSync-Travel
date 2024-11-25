@@ -27,7 +27,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link TravelCommunityFragment#newInstance} factory method to
@@ -146,8 +151,39 @@ public class TravelCommunityFragment extends Fragment {
             String dining = diningInput.getText().toString();
             String notes = notesInput.getText().toString();
 
+            // Check required fields
             if (TextUtils.isEmpty(startDate) || TextUtils.isEmpty(endDate) || TextUtils.isEmpty(destination)) {
-                Toast.makeText(getContext(), "Please fill in all required fields.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Start date, end date, and destination are required.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Validate date format (MM/dd/yyyy)
+            String dateFormat = "\\d{2}/\\d{2}/\\d{4}";
+            if (!startDate.matches(dateFormat) || !endDate.matches(dateFormat)) {
+                Toast.makeText(getContext(), "Dates must be in the format MM/dd/yyyy.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Validate start date is before end date
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+                sdf.setLenient(false);
+                Date start = sdf.parse(startDate);
+                Date end = sdf.parse(endDate);
+
+                if (start == null || end == null || start.after(end)) {
+                    Toast.makeText(getContext(), "Start date must be before end date.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Validate start date is not in the past
+                if (start.before(new Date())) {
+                    Toast.makeText(getContext(), "Start date cannot be in the past.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+            } catch (ParseException e) {
+                Toast.makeText(getContext(), "Invalid date format.", Toast.LENGTH_SHORT).show();
                 return;
             }
 

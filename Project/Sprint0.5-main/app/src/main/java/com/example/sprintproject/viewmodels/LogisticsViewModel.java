@@ -14,7 +14,7 @@ import java.util.Locale;
 
 public class LogisticsViewModel extends ViewModel {
     private static LogisticsViewModel instance;
-
+    // LiveData to hold the travel log
     private final MutableLiveData<LogisticsFragmentModel> travelLog = new MutableLiveData<>();
     private final MutableLiveData<String> duration = new MutableLiveData<>();
     private final MutableLiveData<String> startDate = new MutableLiveData<>();
