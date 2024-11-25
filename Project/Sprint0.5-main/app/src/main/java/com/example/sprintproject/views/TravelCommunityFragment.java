@@ -212,7 +212,7 @@ public class TravelCommunityFragment extends Fragment {
                         })
                         .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to create post: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
-        });
+        }); //new method
 
         dialog.show();
     }
