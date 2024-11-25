@@ -14,19 +14,19 @@ public class TravelCommunityFragmentTest {
 
     private final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
 
-    @Test
+    @Test //Jyotir Sompalli's Tests
     public void testDateFormatValidation_ValidFormat() {
         String validDate = "12/25/2024";
         assertTrue(validDate.matches("\\d{2}/\\d{2}/\\d{4}"));
     }
 
-    @Test
+    @Test //Jyotir Sompalli's Tests
     public void testDateFormatValidation_InvalidFormat() {
         String invalidDate = "2024-12-25";
         assertFalse(invalidDate.matches("\\d{2}/\\d{2}/\\d{4}"));
     }
 
-    @Test
+    @Test //Andrew Nguyen's Tests
     public void testStartDateBeforeEndDate_Valid() throws ParseException {
         Date startDate = sdf.parse("12/24/2024");
         Date endDate = sdf.parse("12/25/2024");
@@ -35,7 +35,7 @@ public class TravelCommunityFragmentTest {
         assertTrue(startDate.before(endDate));
     }
 
-    @Test
+    @Test //Andrew Nguyen's Tests
     public void testStartDateBeforeEndDate_Invalid() throws ParseException {
         Date startDate = sdf.parse("12/25/2024");
         Date endDate = sdf.parse("12/24/2024");
@@ -44,21 +44,21 @@ public class TravelCommunityFragmentTest {
         assertFalse(startDate.before(endDate));
     }
 
-    @Test
+    @Test //Jude Karaki's Tests
     public void testStartDateNotInPast_Valid() throws ParseException {
         Date startDate = sdf.parse("12/25/2024");
         assertNotNull(startDate);
         assertTrue(startDate.after(new Date()));
     }
 
-    @Test
+    @Test //Jude Karaki's Tests
     public void testStartDateNotInPast_Invalid() throws ParseException {
         Date startDate = sdf.parse("12/25/2020");
         assertNotNull(startDate);
         assertFalse(startDate.after(new Date()));
     }
 
-    @Test
+    @Test //Abhiram Chilakamarri's Tests
     public void testEmptyFieldValidation_AllRequiredFieldsProvided() {
         String startDate = "12/25/2024";
         String endDate = "12/30/2024";
@@ -69,7 +69,7 @@ public class TravelCommunityFragmentTest {
         assertFalse(destination.isEmpty());
     }
 
-    @Test
+    @Test //Abhiram Chilakamarri's Tests
     public void testEmptyFieldValidation_MissingRequiredFields() {
         String startDate = "";
         String endDate = "12/30/2024";
@@ -78,5 +78,46 @@ public class TravelCommunityFragmentTest {
         assertTrue(startDate.isEmpty());
         assertTrue(destination.isEmpty());
         assertFalse(endDate.isEmpty());
+    }
+
+    @Test //Vignesh Minjur's Tests
+    public void testEndDateNotBeforeStartDate() throws ParseException {
+        Date startDate = sdf.parse("12/25/2024");
+        Date endDate = sdf.parse("12/24/2024");
+        assertNotNull(startDate);
+        assertNotNull(endDate);
+        assertFalse(endDate.after(startDate));
+    }
+
+    @Test //Vignesh Minjur's Tests
+    public void testAllFieldsCombinedValidation() throws ParseException {
+        String startDate = "12/25/2024";
+        String endDate = "12/30/2024";
+        String destination = "London";
+        String accommodations = "Hotel";
+        String dining = "Local cuisine";
+        String notes = "Pack warm clothes";
+
+        // Ensure required fields are not empty
+        assertFalse(startDate.isEmpty());
+        assertFalse(endDate.isEmpty());
+        assertFalse(destination.isEmpty());
+
+        // Validate date format
+        assertTrue(startDate.matches("\\d{2}/\\d{2}/\\d{4}"));
+        assertTrue(endDate.matches("\\d{2}/\\d{2}/\\d{4}"));
+
+        // Validate date logic
+        Date start = sdf.parse(startDate);
+        Date end = sdf.parse(endDate);
+        assertNotNull(start);
+        assertNotNull(end);
+        assertTrue(start.before(end));
+        assertTrue(start.after(new Date())); // Ensure start date is not in the past
+
+        // Check optional fields
+        assertFalse(accommodations.isEmpty());
+        assertFalse(dining.isEmpty());
+        assertNotNull(notes);
     }
 }
