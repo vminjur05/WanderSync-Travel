@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.google.firebase.auth.FirebaseAuth;
-
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -19,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.TravelPost;
-import com.example.sprintproject.views.TravelPostAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,11 +31,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link TravelCommunityFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class TravelCommunityFragment extends Fragment {
 
     private RecyclerView recyclerView;
@@ -49,14 +42,6 @@ public class TravelCommunityFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment TravelCommunityFragment.
-     */
     public static TravelCommunityFragment newInstance(String param1, String param2) {
         TravelCommunityFragment fragment = new TravelCommunityFragment();
         Bundle args = new Bundle();
@@ -75,21 +60,32 @@ public class TravelCommunityFragment extends Fragment {
             String userEmail = currentUser.getEmail();
             if (userEmail != null) {
                 String encodedEmail = userEmail.replace(".", ","); // Replace '.' with ',' for Firebase keys
-                // Set the database reference to "travel_posts/{encodedEmail}"
                 databaseReference = FirebaseDatabase.getInstance().getReference("travel_posts").child(encodedEmail);
+
+                // Check if default trip needs to be added
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (!snapshot.exists()) {
+                            addDefaultTrip();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(getContext(), "Failed to check user data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             } else {
                 Toast.makeText(getContext(), "Unable to retrieve email address.", Toast.LENGTH_SHORT).show();
             }
         } else {
             Toast.makeText(getContext(), "User not logged in!", Toast.LENGTH_SHORT).show();
-            // Optionally, redirect to the login screen
         }
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_travel_community, container, false);
 
         // Initialize RecyclerView
@@ -118,7 +114,7 @@ public class TravelCommunityFragment extends Fragment {
                     TravelPost post = postSnapshot.getValue(TravelPost.class);
                     travelPosts.add(post);
                 }
-                adapter.notifyDataSetChanged(); // Observer pattern in action
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -126,6 +122,29 @@ public class TravelCommunityFragment extends Fragment {
                 Toast.makeText(getContext(), "Failed to fetch posts: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void addDefaultTrip() {
+        String postId = databaseReference.push().getKey();
+        if (postId != null) {
+            TravelPost defaultTrip = new TravelPost(
+                    postId,
+                    "12/24/2024", // Start date
+                    "12/25/2024", // End date
+                    "CS2340",     // Destination
+                    "None",       // Accommodations
+                    "None",       // Dining
+                    "None"        // Notes
+            );
+
+            databaseReference.child(postId).setValue(defaultTrip)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(getContext(), "Default trip added for new user.", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getContext(), "Failed to add default trip: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        }
     }
 
     private void showNewPostDialog() {
@@ -151,20 +170,17 @@ public class TravelCommunityFragment extends Fragment {
             String dining = diningInput.getText().toString();
             String notes = notesInput.getText().toString();
 
-            // Check required fields
             if (TextUtils.isEmpty(startDate) || TextUtils.isEmpty(endDate) || TextUtils.isEmpty(destination)) {
                 Toast.makeText(getContext(), "Start date, end date, and destination are required.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Validate date format (MM/dd/yyyy)
             String dateFormat = "\\d{2}/\\d{2}/\\d{4}";
             if (!startDate.matches(dateFormat) || !endDate.matches(dateFormat)) {
                 Toast.makeText(getContext(), "Dates must be in the format MM/dd/yyyy.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Validate start date is before end date
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
                 sdf.setLenient(false);
@@ -176,7 +192,6 @@ public class TravelCommunityFragment extends Fragment {
                     return;
                 }
 
-                // Validate start date is not in the past
                 if (start.before(new Date())) {
                     Toast.makeText(getContext(), "Start date cannot be in the past.", Toast.LENGTH_SHORT).show();
                     return;
@@ -187,7 +202,6 @@ public class TravelCommunityFragment extends Fragment {
                 return;
             }
 
-            // Save new travel post to Firebase
             String postId = databaseReference.push().getKey();
             TravelPost post = new TravelPost(postId, startDate, endDate, destination, accommodations, dining, notes);
             if (postId != null) {
