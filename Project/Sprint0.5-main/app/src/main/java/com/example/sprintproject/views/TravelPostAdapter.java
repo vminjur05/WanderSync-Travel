@@ -53,4 +53,4 @@ public class TravelPostAdapter extends RecyclerView.Adapter<TravelPostAdapter.Tr
             notesTextView = itemView.findViewById(R.id.notesTextView);
         }
     }
-}
+} // made some changes bigneshbignur
